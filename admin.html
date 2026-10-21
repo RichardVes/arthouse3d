@@ -3,782 +3,1100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Painel ADM & Pool de Imagens - Arte House 3D</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #FAF8F5;
-            --bg-secondary: #F2EEE9;
-            --bg-card: #FFFFFF;
+            --bg: #FAF8F5;
+            --bg2: #F2EEE9;
+            --card: #FFFFFF;
             --accent: #D9A3B1;
-            --accent-gradient: linear-gradient(135deg, #D9A3B1 0%, #BF9FA7 100%);
-            --danger: #ef4444;
-            --success: #22c55e;
-            --text-main: #3F403C;
-            --text-muted: #7A7872;
+            --accent-grad: linear-gradient(135deg, #D9A3B1 0%, #BF9FA7 100%);
+            --danger: #dc2626;
+            --success: #16a34a;
+            --text: #3F403C;
+            --muted: #7A7872;
             --border: #E6E1DA;
             --radius: 12px;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        [hidden] { display: none !important; }
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-main);
-            line-height: 1.6;
+            font-family: Inter, system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
             padding: 2rem 1rem;
         }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding: 1.5rem 2rem;
-            background: var(--bg-secondary);
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            flex-wrap: wrap;
-            gap: 1rem;
+        .container { max-width: 1400px; margin: 0 auto; }
+        .topbar {
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 1rem;
+            margin-bottom: 2rem; padding: 1.5rem 2rem;
+            background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
         }
         h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 1.8rem; font-weight: 700;
+            background: var(--accent-grad);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; color: transparent;
         }
+        .muted { color: var(--muted); font-size: 0.9rem; }
+        .toolbar { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
         .btn {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
+            display: inline-block; background: var(--accent); color: #fff;
+            border: 0; padding: 0.6rem 1.2rem; border-radius: 8px;
+            font: inherit; font-weight: 600; cursor: pointer; text-decoration: none;
             transition: opacity 0.2s;
-            display: inline-block;
         }
         .btn:hover { opacity: 0.9; }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-success { background: var(--success); color: white; }
-        .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+        .btn-dark { background: var(--text); }
+        .btn-danger { background: var(--danger); }
+        .btn-success { background: var(--success); }
+        .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.8rem; }
+        .btn-full { width: 100%; }
+        .mt { margin-top: 0.5rem; }
+        :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-        .layout {
-            display: grid;
-            grid-template-columns: 400px 1fr;
-            gap: 2rem;
-        }
-        @media(max-width: 1000px) {
-            .layout { grid-template-columns: 1fr; }
-        }
+        .layout { display: grid; grid-template-columns: 400px 1fr; gap: 2rem; align-items: start; }
+        @media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } }
 
         .panel {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
+            background: var(--bg2); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 1.5rem; margin-bottom: 2rem;
         }
-        .panel h2 {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
+        .panel h2 { font-size: 1.2rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+        .panel-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
+        .panel-head h2 { margin: 0; border: 0; padding: 0; }
+
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.4rem; }
+        input, select {
+            width: 100%; padding: 0.7rem; background: var(--card);
+            border: 1px solid var(--border); border-radius: 8px;
+            color: var(--text); font: inherit;
         }
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        label {
-            display: block;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 0.4rem;
-        }
-        input, select, textarea {
-            width: 100%;
-            padding: 0.75rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-main);
-            font-family: inherit;
-        }
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--accent);
+        input:focus, select:focus { outline: none; border-color: var(--accent); }
+        input.readonly { background: var(--bg); color: var(--accent); }
+        .preview {
+            display: block; width: 100%; max-height: 160px; object-fit: contain;
+            margin-top: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--card);
         }
 
-        .cat-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            max-height: 180px;
-            overflow-y: auto;
-            margin-bottom: 1rem;
-        }
+        .cat-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 180px; overflow-y: auto; margin-bottom: 1rem; }
         .cat-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg-card);
-            padding: 0.5rem 0.75rem;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            font-size: 0.9rem;
+            display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;
+            background: var(--card); padding: 0.5rem 0.75rem; border-radius: 6px;
+            border: 1px solid var(--border); font-size: 0.9rem;
         }
 
-        .pool-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            max-height: 700px;
-            overflow-y: auto;
-            padding-right: 0.5rem;
-        }
-        .date-group-title {
-            font-size: 1.1rem;
-            color: var(--accent);
-            margin-bottom: 0.75rem;
-            font-weight: 600;
-        }
-        .pool-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-            gap: 0.75rem;
-        }
+        .pool-container { display: flex; flex-direction: column; gap: 1.5rem; max-height: 700px; overflow-y: auto; padding-right: 0.5rem; }
+        .date-group-title { font-size: 1.05rem; color: var(--accent); margin-bottom: 0.75rem; font-weight: 600; }
+        .pool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 0.75rem; }
         .pool-item {
-            background: var(--bg-card);
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
+            position: relative; background: var(--card); border: 2px solid var(--border);
+            border-radius: 8px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s;
         }
-        .pool-item.selected {
-            border-color: var(--success);
-            box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
-        }
-        .pool-item img {
-            width: 100%;
-            height: 90px;
-            object-fit: cover;
-        }
+        .pool-item.selected { border-color: var(--success); box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
+        .pool-item img { display: block; width: 100%; height: 90px; object-fit: cover; cursor: pointer; }
         .pool-item-name {
-            font-size: 0.7rem;
-            padding: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: var(--text-muted);
+            font-size: 0.7rem; padding: 4px; white-space: nowrap;
+            overflow: hidden; text-overflow: ellipsis; color: var(--muted);
         }
-        .pool-checkbox {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            z-index: 10;
-        }
+        .pool-checkbox { position: absolute; top: 5px; right: 5px; width: 18px; height: 18px; cursor: pointer; z-index: 1; }
 
-        .items-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            max-height: 450px;
-            overflow-y: auto;
-            padding-right: 0.5rem;
-        }
+        .items-list { display: flex; flex-direction: column; gap: 0.75rem; max-height: 520px; overflow-y: auto; padding-right: 0.5rem; }
         .item-row {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            background: var(--bg-card);
-            padding: 0.75rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
+            display: flex; align-items: center; gap: 1rem; background: var(--card);
+            padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border);
         }
-        .item-thumb {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 6px;
-        }
-        .item-info {
-            flex-grow: 1;
-        }
-        .item-title {
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-        .item-cat {
-            font-size: 0.75rem;
-            color: var(--accent);
-        }
-        .item-actions {
-            display: flex;
-            gap: 0.3rem;
-            align-items: center;
-        }
+        .item-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+        .item-info { flex-grow: 1; min-width: 0; }
+        .item-title { font-weight: 600; font-size: 0.95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .item-cat { font-size: 0.75rem; color: var(--accent); }
+        .item-cat.warn { color: var(--danger); }
+        .item-actions { display: flex; gap: 0.3rem; }
         .action-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 0.85rem;
-            padding: 0.3rem 0.5rem;
-            border-radius: 4px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
+            background: var(--bg); border: 1px solid var(--border); color: var(--muted);
+            cursor: pointer; font-size: 0.85rem; padding: 0.3rem 0.5rem; border-radius: 4px;
         }
         .action-btn:hover { color: var(--accent); background: var(--border); }
         .action-btn.delete:hover { color: var(--danger); }
+        .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+        .check-inline { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text); font-size: 0.9rem; margin: 0; }
+        .check-inline input { width: auto; }
+        .prod-check { width: 18px; height: 18px; flex-shrink: 0; cursor: pointer; }
+        .item-row.selected { border-color: var(--success); box-shadow: 0 0 8px rgba(34, 197, 94, 0.35); }
+        .bulkbar {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+            gap: 0.75rem; margin-bottom: 1rem; padding: 0.75rem;
+            background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+        }
+        .bulk-buttons { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .bulk-form { background: var(--card); border: 1px solid var(--accent); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+        .bulk-form h3 { font-size: 1rem; margin-bottom: 0.75rem; }
+        .bulk-row { display: grid; grid-template-columns: 170px 1fr; gap: 0.5rem; align-items: center; margin-bottom: 0.6rem; }
+        .bulk-row label { margin: 0; }
+        .bulk-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
+        .pool-del {
+            position: absolute; top: 4px; left: 4px; z-index: 1; width: 20px; height: 20px;
+            border: 0; border-radius: 50%; background: rgba(220, 38, 38, 0.9); color: #fff;
+            font-size: 11px; line-height: 20px; padding: 0; cursor: pointer;
+        }
+        .pool-del:hover { background: var(--danger); }
+        .empty { color: var(--muted); text-align: center; padding: 1rem; }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
+        <header class="topbar">
             <div>
                 <h1>Painel ADM & Pool de Imagens</h1>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Gerencie IDs, ordens, categorias e publique atualizações</p>
+                <p class="muted">Gerencie IDs, ordem, categorias e publique o catálogo</p>
             </div>
-            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                <button onclick="exportPublicCatalogFile()" class="btn btn-success" title="Baixa o catalogo.html atualizado para subir na Vercel">📥 Baixar catalogo.html</button>
-                <a href="catalogo.html" target="_blank" class="btn" style="background: var(--text-main); color: #fff;">Ver Catálogo ↗</a>
-                <button onclick="resetLocalStorage()" class="btn btn-danger" title="Restaurar padrão">Limpar Cache</button>
+            <div class="toolbar">
+                <button type="button" id="btn-export" class="btn btn-success" title="Gera o catalogo.html atualizado para subir no projeto">📥 Baixar catalogo.html</button>
+                <a href="catalogo.html" target="_blank" rel="noopener" class="btn btn-dark">Ver catálogo ↗</a>
+                <button type="button" id="btn-reset" class="btn btn-danger" title="Apaga alterações locais e restaura o padrão">Limpar cache</button>
             </div>
         </header>
 
         <div class="layout">
             <div>
-                <div class="panel">
-                    <h2 id="form-heading">Adicionar / Editar Produto</h2>
-                    <form id="product-form" onsubmit="saveProduct(event)">
-                        <input type="hidden" id="edit-index" value="">
+                <section class="panel">
+                    <h2 id="form-heading">Adicionar / editar produto</h2>
+                    <form id="product-form" autocomplete="off">
                         <div class="form-group">
-                            <label>Foto Selecionada</label>
-                            <input type="text" id="prod-path" required placeholder="Clique em uma foto na pool ao lado" readonly style="background: var(--bg-primary); color: var(--accent);">
+                            <label for="prod-path">Foto selecionada</label>
+                            <input id="prod-path" type="text" class="readonly" readonly placeholder="Clique em uma foto na pool ao lado">
+                            <img id="prod-preview" class="preview" alt="" hidden>
                         </div>
                         <div class="form-group">
-                            <label>ID / Código de Identificação (ex: CH-01)</label>
-                            <input type="text" id="prod-id" required placeholder="Ex: CH-01" value="CH-01">
+                            <label for="prod-id">ID / código (ex.: CH-01)</label>
+                            <input id="prod-id" type="text" required placeholder="CH-01">
                         </div>
                         <div class="form-group">
-                            <label>Nome do Produto</label>
-                            <input type="text" id="prod-name" required placeholder="Ex: Chaveiro Deadpool">
+                            <label for="prod-name">Nome do produto</label>
+                            <input id="prod-name" type="text" required placeholder="Ex.: Chaveiro Deadpool">
                         </div>
                         <div class="form-group">
-                            <label>Categoria</label>
+                            <label for="prod-cat">Categoria</label>
                             <select id="prod-cat" required></select>
                         </div>
-                        <button type="submit" class="btn" style="width: 100%;">Salvar Produto no Catálogo</button>
-                        <button type="button" id="cancel-btn" class="btn btn-danger" style="width: 100%; margin-top: 0.5rem; display: none;" onclick="resetForm()">Cancelar Edição</button>
+                        <button id="btn-save" type="submit" class="btn btn-full">Salvar produto no catálogo</button>
+                        <button id="cancel-btn" type="button" class="btn btn-danger btn-full mt" hidden>Cancelar edição</button>
                     </form>
-                </div>
+                </section>
 
-                <div class="panel">
-                    <h2>⚡ Adicionar Selecionadas em Lote</h2>
+                <section class="panel">
+                    <h2>⚡ Adicionar selecionadas em lote</h2>
                     <div class="form-group">
-                        <label>ID Base (ex: CH-01)</label>
-                        <input type="text" id="batch-id" placeholder="Ex: CH-01" required value="CH-01">
+                        <label for="batch-id">ID do produto</label>
+                        <input id="batch-id" type="text" value="CH-01">
+                        <select id="batch-id-mode" style="margin-top:0.4rem;">
+                            <option value="same">Mesmo ID para todas as fotos (mesmo produto)</option>
+                            <option value="seq">IDs sequenciais a partir deste (CH-01, CH-02…)</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label>Nome do Produto</label>
-                        <input type="text" id="batch-name" placeholder="Ex: Chaveiro Deadpool" required value="Chaveiro Colecionável">
+                        <label for="batch-name">Nome do produto</label>
+                        <input id="batch-name" type="text" value="Chaveiro Colecionável">
                     </div>
                     <div class="form-group">
-                        <label>Categoria de Destino</label>
+                        <label for="batch-cat">Categoria de destino</label>
                         <select id="batch-cat"></select>
                     </div>
-                    <button type="button" class="btn btn-success" style="width: 100%;" onclick="addSelectedInBatch()">Adicionar Marcadas (<span id="selected-count">0</span>)</button>
-                </div>
+                    <button id="btn-batch" type="button" class="btn btn-success btn-full">Adicionar marcadas (<span id="selected-count">0</span>)</button>
+                </section>
 
-                <div class="panel">
-                    <h2>🏷️ Gerenciar Categorias</h2>
-                    <div class="cat-list" id="cat-list-container"></div>
-                    <form onsubmit="addCategory(event)">
+                <section class="panel">
+                    <h2>🏷️ Gerenciar categorias</h2>
+                    <div class="cat-list" id="cat-list"></div>
+                    <form id="cat-form" autocomplete="off">
                         <div class="form-group">
-                            <label>ID da Categoria (ex: chaveiros)</label>
-                            <input type="text" id="cat-id" required placeholder="ex: chaveiros">
+                            <label for="cat-id">ID da categoria (ex.: chaveiros)</label>
+                            <input id="cat-id" type="text" placeholder="chaveiros">
                         </div>
                         <div class="form-group">
-                            <label>Nome Exibido</label>
-                            <input type="text" id="cat-title" required placeholder="Ex: Chaveiros 3D">
+                            <label for="cat-title">Nome exibido</label>
+                            <input id="cat-title" type="text" required placeholder="Ex.: Chaveiros 3D">
                         </div>
-                        <button type="submit" class="btn" style="width: 100%;">Criar Categoria</button>
+                        <button type="submit" class="btn btn-full">Criar categoria</button>
                     </form>
-                </div>
+                </section>
 
-                <div class="panel">
-                    <h2>📥 Enviar Novas Fotos</h2>
+                <section class="panel">
+                    <h2>📥 Enviar novas fotos</h2>
                     <div class="form-group">
-                        <label>Selecione fotos do seu computador</label>
-                        <input type="file" id="upload-files" multiple accept="image/*" onchange="handleFileUpload(event)">
+                        <label for="upload-files">Selecione fotos do seu computador</label>
+                        <input id="upload-files" type="file" multiple accept="image/*">
                     </div>
-                </div>
+                </section>
             </div>
 
             <div>
-                <div class="panel">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
-                        <h2 style="margin: 0; border: none; padding: 0;">📦 Produtos Cadastrados (<span id="total-count">0</span>)</h2>
-                        <div style="display: flex; gap: 0.5rem; align-items: center;">
-                            <label style="margin: 0; font-size: 0.8rem;">Filtrar Categoria:</label>
-                            <select id="filter-prod-cat" onchange="renderProductsList()" style="padding: 0.4rem; font-size: 0.85rem; width: 160px;">
-                                <option value="all">Todas as Categorias</option>
+                <section class="panel">
+                    <div class="panel-head">
+                        <h2>📦 Produtos cadastrados (<span id="total-count">0</span>)</h2>
+                        <div style="display:flex; gap:0.5rem; align-items:center;">
+                            <label for="filter-cat" style="margin:0;">Categoria:</label>
+                            <select id="filter-cat" style="width:180px; padding:0.4rem;">
+                                <option value="all">Todas as categorias</option>
                             </select>
                         </div>
                     </div>
+                    <div class="bulkbar">
+                        <label class="check-inline"><input type="checkbox" id="prod-select-visible"> Selecionar visíveis</label>
+                        <span class="muted"><span id="sel-count">0</span> selecionado(s)</span>
+                        <div class="bulk-buttons">
+                            <button type="button" class="btn btn-sm" id="btn-bulk-edit" disabled>✏️ Editar</button>
+                            <button type="button" class="btn btn-sm btn-danger" id="btn-bulk-del" disabled>🗑️ Excluir</button>
+                            <button type="button" class="btn btn-sm btn-dark" id="btn-bulk-up" disabled>⬆️ Subir</button>
+                            <button type="button" class="btn btn-sm btn-dark" id="btn-bulk-down" disabled>⬇️ Descer</button>
+                            <button type="button" class="btn btn-sm btn-dark" id="btn-bulk-clear" disabled>Limpar seleção</button>
+                        </div>
+                    </div>
+                    <form id="bulk-form" class="bulk-form" autocomplete="off" hidden>
+                        <h3>Editar produtos selecionados</h3>
+                        <div class="bulk-row">
+                            <label class="check-inline"><input type="checkbox" id="bulk-chk-id"> Alterar ID</label>
+                            <div>
+                                <input id="bulk-id" type="text" placeholder="Ex.: CH-01">
+                                <select id="bulk-id-mode" style="margin-top:0.4rem;">
+                                    <option value="same">Mesmo ID para todos</option>
+                                    <option value="seq">Numerar a partir deste ID (CH-01, CH-02…)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="bulk-row">
+                            <label class="check-inline"><input type="checkbox" id="bulk-chk-name"> Alterar nome</label>
+                            <input id="bulk-name" type="text" placeholder="Nome do produto">
+                        </div>
+                        <div class="bulk-row">
+                            <label class="check-inline"><input type="checkbox" id="bulk-chk-cat"> Alterar categoria</label>
+                            <select id="bulk-cat"></select>
+                        </div>
+                        <div class="bulk-actions">
+                            <button type="button" id="bulk-cancel" class="btn btn-dark">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Aplicar aos selecionados</button>
+                        </div>
+                    </form>
                     <div class="items-list" id="products-list"></div>
-                </div>
+                </section>
 
-                <div class="panel">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                        <h2 style="margin: 0; border: none; padding: 0;">Pool de Imagens (Por Data)</h2>
+                <section class="panel">
+                    <div class="panel-head">
+                        <h2>Pool de imagens (por data)</h2>
                         <div>
-                            <button class="btn btn-sm" onclick="selectAllPool(true)" style="background: var(--text-main); color: white;">Marcar Todas</button>
-                            <button class="btn btn-sm" onclick="selectAllPool(false)" style="background: var(--text-main); color: white; margin-left: 0.3rem;">Desmarcar</button>
+                            <button type="button" class="btn btn-sm btn-dark" id="btn-select-all">Marcar todas</button>
+                            <button type="button" class="btn btn-sm btn-dark" id="btn-select-none">Desmarcar</button>
+                            <button type="button" class="btn btn-sm btn-danger" id="btn-del-uploads" disabled>Excluir selecionadas (0)</button>
                         </div>
                     </div>
                     <div class="pool-container" id="image-pool"></div>
-                </div>
+                </section>
             </div>
         </div>
     </div>
 
     <script>
         const imagePool = [{"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.54.00.jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.54.00.jpeg", "date": "2026-10-21", "timestamp": 1792592146.3760266}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.59 (4).jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.59 (4).jpeg", "date": "2026-10-21", "timestamp": 1792592146.375026}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.59 (3).jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.59 (3).jpeg", "date": "2026-10-21", "timestamp": 1792592146.374027}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.59 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.59 (2).jpeg", "date": "2026-10-21", "timestamp": 1792592146.372026}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.59 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.59 (1).jpeg", "date": "2026-10-21", "timestamp": 1792592146.3710265}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.59.jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.59.jpeg", "date": "2026-10-21", "timestamp": 1792592146.369028}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.58 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.58 (2).jpeg", "date": "2026-10-21", "timestamp": 1792592146.3680272}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.58 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.58 (1).jpeg", "date": "2026-10-21", "timestamp": 1792592146.3670278}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.58.jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.58.jpeg", "date": "2026-10-21", "timestamp": 1792592146.3630266}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.39.jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.39.jpeg", "date": "2026-10-21", "timestamp": 1792592146.3550274}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.37 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.37 (1).jpeg", "date": "2026-10-21", "timestamp": 1792592146.3540263}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.37.jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.37.jpeg", "date": "2026-10-21", "timestamp": 1792592146.3520262}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.10 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.10 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1303678}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.10 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.10 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1283658}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.10.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.10.jpeg", "date": "2026-10-21", "timestamp": 1792587469.1263688}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.09 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.09 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1253679}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.09 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.09 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.12337}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.09.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.09.jpeg", "date": "2026-10-21", "timestamp": 1792587469.121367}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.08 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.08 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1203713}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.08 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.08 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.118367}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.08.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.08.jpeg", "date": "2026-10-21", "timestamp": 1792587469.1173682}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.07 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.07 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1153662}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.07 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.07 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1143696}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.07.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.07.jpeg", "date": "2026-10-21", "timestamp": 1792587469.1123664}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.06 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.06 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.111366}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.06 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.06 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1093664}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.06.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.06.jpeg", "date": "2026-10-21", "timestamp": 1792587469.108366}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.05 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.05 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1063678}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.05 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.05 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1053658}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.05.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.05.jpeg", "date": "2026-10-21", "timestamp": 1792587469.1033685}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.04 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.04 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.102369}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.04 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.04 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1013675}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.04.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.04.jpeg", "date": "2026-10-21", "timestamp": 1792587469.099367}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.03 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.03 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.097366}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.03 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.03 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0963702}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.03.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.03.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0953662}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.02 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.02 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0933664}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.02 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.02 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0923657}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.02.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.02.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0903685}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.01 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.01 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0893655}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.01.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.01.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0873659}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.53.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.53.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0863662}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.51 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.51 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0843675}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.51.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.51.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0823681}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.50 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.50 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.081368}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.50.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.50.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0793674}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.49 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.49 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0783675}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.49.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.49.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0763657}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.48.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.48.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0753655}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.47 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.47 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.073366}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.47.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.47.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0723655}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.46 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.46 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0713658}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.46.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.46.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0693667}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.45 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.45 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0683656}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.45.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.45.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0663662}, {"path": "image_cf03c98f.jpg", "filename": "image_cf03c98f.jpg", "date": "2026-09-30", "timestamp": 1790793532.5169308}, {"path": "toto/WhatsApp Image 2026-09-30 at 14.34.48.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.34.48.jpeg", "date": "2026-09-30", "timestamp": 1790793346.971881}, {"path": "image_3d7a585c.jpg", "filename": "image_3d7a585c.jpg", "date": "2026-09-30", "timestamp": 1790792799.3646607}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.32 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.32 (1).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6415715}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.32.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.32.jpeg", "date": "2026-09-30", "timestamp": 1790792628.640585}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.31 (3).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.31 (3).jpeg", "date": "2026-09-30", "timestamp": 1790792628.639574}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.31 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.31 (2).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6375716}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.31 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.31 (1).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6365705}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.31.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.31.jpeg", "date": "2026-09-30", "timestamp": 1790792628.634571}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.30 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.30 (2).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6335657}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.30 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.30 (1).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6320617}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.30.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.30.jpeg", "date": "2026-09-30", "timestamp": 1790792628.630062}, {"path": "image_15fc3d72.jpg", "filename": "image_15fc3d72.jpg", "date": "2026-09-30", "timestamp": 1790792602.989645}, {"path": "toto/WhatsApp Image 2026-09-30 at 14.06.47 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.47 (2).jpeg", "date": "2026-09-30", "timestamp": 1790792479.9290528}, {"path": "toto/WhatsApp Image 2026-09-30 at 14.06.47 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.47 (1).jpeg", "date": "2026-09-30", "timestamp": 1790792479.9280508}, {"path": "toto/WhatsApp Image 2026-09-30 at 14.06.47.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.47.jpeg", "date": "2026-09-30", "timestamp": 1790792479.926051}, {"path": "image_49e53415.jpg", "filename": "image_49e53415.jpg", "date": "2026-09-30", "timestamp": 1790788541.9245007}, {"path": "image_2cb4cac.jpg", "filename": "image_2cb4cac.jpg", "date": "2026-09-30", "timestamp": 1790788496.897199}, {"path": "image_17c2c6ec.jpg", "filename": "image_17c2c6ec.jpg", "date": "2026-09-30", "timestamp": 1790788460.9378726}, {"path": "image_8d946220.jpg", "filename": "image_8d946220.jpg", "date": "2026-09-30", "timestamp": 1790788445.1729538}, {"path": "image_eba79db9.jpg", "filename": "image_eba79db9.jpg", "date": "2026-09-30", "timestamp": 1790783828.722886}, {"path": "WhatsApp Image 2026-09-30 at 11.31.092.jpeg", "filename": "WhatsApp Image 2026-09-30 at 11.31.092.jpeg", "date": "2026-09-30", "timestamp": 1790782356.963105}, {"path": "WhatsApp Image 2026-09-30 at 11.31.09.jpeg", "filename": "WhatsApp Image 2026-09-30 at 11.31.09.jpeg", "date": "2026-09-30", "timestamp": 1790782347.3988407}, {"path": "https_www_instagram_com_artehouse3d_.png", "filename": "https_www_instagram_com_artehouse3d_.png", "date": "2026-09-30", "timestamp": 1790780889.4516256}, {"path": "image_cdfb5a63.jpg", "filename": "image_cdfb5a63.jpg", "date": "2026-09-30", "timestamp": 1790778327.6288908}, {"path": "image_9ad8d417.jpg", "filename": "image_9ad8d417.jpg", "date": "2026-09-30", "timestamp": 1790778317.2329733}, {"path": "image_6c913577.jpg", "filename": "image_6c913577.jpg", "date": "2026-09-30", "timestamp": 1790778305.0400908}, {"path": "image_6a9e9fb5.jpg", "filename": "image_6a9e9fb5.jpg", "date": "2026-09-30", "timestamp": 1790778290.8562238}, {"path": "image_507079f6.jpg", "filename": "image_507079f6.jpg", "date": "2026-09-30", "timestamp": 1790777740.7171798}, {"path": "bulba/WhatsApp Image 2026-09-30 at 10.04.58 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.58 (2).jpeg", "date": "2026-09-30", "timestamp": 1790777694.5871184}, {"path": "bulba/WhatsApp Image 2026-09-30 at 10.04.58 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.58 (1).jpeg", "date": "2026-09-30", "timestamp": 1790777694.5861175}, {"path": "bulba/WhatsApp Image 2026-09-30 at 10.04.58.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.58.jpeg", "date": "2026-09-30", "timestamp": 1790777694.5851164}, {"path": "jolteon/WhatsApp Image 2026-09-30 at 10.04.51.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.51.jpeg", "date": "2026-09-30", "timestamp": 1790777658.7151735}, {"path": "jolteon/WhatsApp Image 2026-09-30 at 10.04.50 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.50 (2).jpeg", "date": "2026-09-30", "timestamp": 1790777658.7141728}, {"path": "jolteon/WhatsApp Image 2026-09-30 at 10.04.50 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.50 (1).jpeg", "date": "2026-09-30", "timestamp": 1790777658.7121723}, {"path": "jolteon/WhatsApp Image 2026-09-30 at 10.04.50.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.50.jpeg", "date": "2026-09-30", "timestamp": 1790777658.7111733}, {"path": "image_23c0558e.jpg", "filename": "image_23c0558e.jpg", "date": "2026-09-30", "timestamp": 1790777591.5115614}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.45 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.45 (2).jpeg", "date": "2026-09-30", "timestamp": 1790777447.2651024}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.45 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.45 (1).jpeg", "date": "2026-09-30", "timestamp": 1790777447.2631025}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.45.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.45.jpeg", "date": "2026-09-30", "timestamp": 1790777447.2621055}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.44 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.44 (1).jpeg", "date": "2026-09-30", "timestamp": 1790777447.260103}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.44.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.44.jpeg", "date": "2026-09-30", "timestamp": 1790777447.2591019}];
-        let catalogData = JSON.parse(localStorage.getItem('artehouse_catalog')) || [
+
+        const DEFAULT_CATALOG = [
             { id: "PK-01", name: "Bulbasaur Vaso / Cachepô", category: "pokemon", path: "bulba/WhatsApp Image 2026-09-30 at 10.04.58.jpeg" },
             { id: "PK-02", name: "Gengar 3D", category: "pokemon", path: "gengar/WhatsApp Image 2026-09-30 at 10.04.44.jpeg" },
             { id: "PK-03", name: "Jolteon Eeveelution", category: "pokemon", path: "jolteon/WhatsApp Image 2026-09-30 at 10.04.50.jpeg" },
             { id: "AR-01", name: "Asas Articuladas", category: "articulados", path: "ala/WhatsApp Image 2026-09-30 at 14.06.30.jpeg" }
         ];
+        const DEFAULT_CATEGORIES = {
+            pokemon: "Pokémon & Geeks",
+            articulados: "Articulados & Asas",
+            diversos: "Vitrine & Outros Produtos"
+        };
+        const KEYS = { catalog: "artehouse_catalog", cats: "artehouse_cats", uploads: "artehouse_uploaded", hidden: "artehouse_hidden" };
 
-        let categories = JSON.parse(localStorage.getItem('artehouse_cats')) || {
-            "pokemon": "Pokémon & Geeks",
-            "articulados": "Articulados & Asas",
-            "diversos": "Vitrine & Outros Produtos"
+        const state = {
+            catalog: [],
+            categories: {},
+            uploads: [],
+            selected: new Set(),
+            selProducts: new Set(),
+            hidden: new Set(),
+            editRef: null
         };
 
-        let selectedPaths = new Set();
+        const $ = id => document.getElementById(id);
+
+        /* ---------- utilidades ---------- */
+
+        const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+
+        const todayLocal = () => {
+            const d = new Date();
+            return [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
+        };
+
+        const slugify = text => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+        function readStore(key, fallback) {
+            try {
+                const value = JSON.parse(localStorage.getItem(key));
+                return value ?? fallback;
+            } catch {
+                return fallback;
+            }
+        }
+
+        function writeStore(key, value) {
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
+                return true;
+            } catch (err) {
+                if (err && err.name === 'QuotaExceededError') {
+                    alert('O armazenamento do navegador está cheio. As alterações valem nesta sessão, mas podem se perder ao recarregar. Use imagens menores ou limpe fotos antigas.');
+                } else {
+                    console.warn('Não foi possível salvar', key, err);
+                }
+                return false;
+            }
+        }
+
+        function sanitizeCatalog(list) {
+            if (!Array.isArray(list)) return [];
+            return list
+                .filter(p => p && typeof p.name === 'string' && typeof p.path === 'string' && typeof p.category === 'string')
+                .map(p => ({ id: String(p.id ?? ''), name: p.name, category: p.category, path: p.path }));
+        }
+
+        function allImages() {
+            return [...state.uploads, ...imagePool].filter(img => !state.hidden.has(img.path));
+        }
+
+        /* ---------- persistência e render geral ---------- */
 
         function init() {
-            renderCategoriesUI();
-            renderImagePool();
-            renderProductsList();
+            state.catalog = sanitizeCatalog(readStore(KEYS.catalog, DEFAULT_CATALOG));
+            const cats = readStore(KEYS.cats, null);
+            state.categories = cats && typeof cats === 'object' && Object.keys(cats).length ? cats : { ...DEFAULT_CATEGORIES };
+            const uploads = readStore(KEYS.uploads, []);
+            state.uploads = Array.isArray(uploads) ? uploads : [];
+            const hidden = readStore(KEYS.hidden, []);
+            state.hidden = new Set(Array.isArray(hidden) ? hidden.filter(x => typeof x === 'string') : []);
+            renderAll();
         }
 
-        function resetLocalStorage() {
-            if(confirm("Deseja limpar os dados salvos e restaurar o catálogo padrão?")) {
-                localStorage.removeItem('artehouse_catalog');
-                localStorage.removeItem('artehouse_cats');
-                localStorage.removeItem('artehouse_uploaded');
-                location.reload();
+        function renderAll() {
+            renderCategories();
+            renderProducts();
+            renderPool();
+        }
+
+        function commitCatalog() {
+            writeStore(KEYS.catalog, state.catalog);
+            renderCategories();
+            renderProducts();
+        }
+
+        /* ---------- categorias ---------- */
+
+        function renderCategories() {
+            const filter = $('filter-cat');
+            const previous = filter.value;
+            const options = Object.entries(state.categories)
+                .map(([key, title]) => `<option value="${esc(key)}">${esc(title)}</option>`).join('');
+
+            $('batch-cat').innerHTML = options;
+            $('bulk-cat').innerHTML = options;
+            $('prod-cat').innerHTML = options;
+            filter.innerHTML = '<option value="all">Todas as categorias</option>' + options;
+            filter.value = [...filter.options].some(o => o.value === previous) ? previous : 'all';
+
+            $('cat-list').innerHTML = Object.entries(state.categories).map(([key, title]) => {
+                const count = state.catalog.filter(p => p.category === key).length;
+                return `
+                    <div class="cat-row">
+                        <span><b>${esc(title)}</b> <small class="muted">(${esc(key)} · ${count} itens)</small></span>
+                        <button type="button" class="action-btn delete" data-action="del-cat" data-key="${esc(key)}"
+                                title="Excluir categoria" aria-label="Excluir categoria ${esc(title)}">🗑️</button>
+                    </div>`;
+            }).join('');
+        }
+
+        function onAddCategory(e) {
+            e.preventDefault();
+            const title = $('cat-title').value.trim();
+            const key = slugify($('cat-id').value.trim() || title);
+            if (!key || !title) {
+                alert('Informe um nome e um ID válidos para a categoria.');
+                return;
             }
-        }
+            if (state.categories[key] && !confirm(`A categoria "${key}" já existe. Trocar o nome para "${title}"?`)) return;
 
-        function exportPublicCatalogFile() {
-            const currentCatalogJSON = JSON.stringify(catalogData, null, 4);
-            const currentCatsJSON = JSON.stringify(categories, null, 4);
-
-            const fileContent = "<!DOCTYPE html>\n" +
-                "<html lang="pt-BR">\n" +
-                "<head>\n" +
-                "    <meta charset="UTF-8">\n" +
-                "    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n" +
-                "    <title>Catálogo de Amostras - Arte House 3D</title>\n" +
-                "    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">\n" +
-                "    <style>\n" +
-                "        :root {\n" +
-                "            --bg-primary: #FAF8F5;\n" +
-                "            --bg-secondary: #F2EEE9;\n" +
-                "            --bg-card: #FFFFFF;\n" +
-                "            --accent: #D9A3B1;\n" +
-                "            --accent-gradient: linear-gradient(135deg, #D9A3B1 0%, #BF9FA7 100%);\n" +
-                "            --text-main: #3F403C;\n" +
-                "            --text-muted: #7A7872;\n" +
-                "            --border: #E6E1DA;\n" +
-                "            --radius: 12px;\n" +
-                "        }\n" +
-                "        * { box-sizing: border-box; margin: 0; padding: 0; }\n" +
-                "        body { font-family: 'Inter', sans-serif; background-color: var(--bg-primary); color: var(--text-main); line-height: 1.6; padding: 2rem 1rem; }\n" +
-                "        .container { max-width: 1200px; margin: 0 auto; }\n" +
-                "        header { text-align: center; margin-bottom: 3rem; padding: 2rem; background: var(--bg-secondary); border-radius: var(--radius); border: 1px solid var(--border); position: relative; overflow: hidden; }\n" +
-                "        header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--accent-gradient); }\n" +
-                "        .logo-container img { max-height: 80px; margin-bottom: 1rem; border-radius: 8px; }\n" +
-                "        h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }\n" +
-                "        .subtitle { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem; }\n" +
-                "        .social-link { display: inline-flex; align-items: center; gap: 0.5rem; background: #e1306c; color: white; padding: 0.6rem 1.2rem; border-radius: 50px; text-decoration: none; font-weight: 500; transition: opacity 0.2s; }\n" +
-                "        .social-link:hover { opacity: 0.9; }\n" +
-                "        .filters { display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 2.5rem; flex-wrap: wrap; }\n" +
-                "        .filter-btn { background: var(--bg-secondary); color: var(--text-muted); border: 1px solid var(--border); padding: 0.6rem 1.2rem; border-radius: 50px; cursor: pointer; font-weight: 500; transition: all 0.2s; }\n" +
-                "        .filter-btn.active, .filter-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }\n" +
-                "        .category-section { margin-bottom: 4rem; }\n" +
-                "        .category-header { margin-bottom: 1.5rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; }\n" +
-                "        .category-title { font-size: 1.8rem; font-weight: 600; color: var(--text-main); }\n" +
-                "        .category-desc { color: var(--text-muted); font-size: 0.95rem; }\n" +
-                "        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }\n" +
-                "        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column; }\n" +
-                "        .card:hover { transform: translateY(-4px); border-color: var(--accent); }\n" +
-                "        .card-img-wrapper { width: 100%; height: 220px; overflow: hidden; background: #111; cursor: pointer; position: relative; }\n" +
-                "        .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }\n" +
-                "        .card-img-wrapper:hover img { transform: scale(1.05); }\n" +
-                "        .card-body { padding: 1rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }\n" +
-                "        .card-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }\n" +
-                "        .card-meta { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }\n" +
-                "        .card-badge { display: inline-block; background: rgba(217, 163, 177, 0.2); color: #b07080; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 500; }\n" +
-                "        .card-id-badge { display: inline-block; background: rgba(99, 102, 241, 0.15); color: #6366f1; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 600; }\n" +
-                "        .lightbox { display: none; position: fixed; z-index: 1000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 2rem; }\n" +
-                "        .lightbox img { max-width: 90%; max-height: 85vh; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }\n" +
-                "        .lightbox-close { position: absolute; top: 20px; right: 30px; color: white; font-size: 2rem; cursor: pointer; background: none; border: none; }\n" +
-                "        footer { text-align: center; margin-top: 4rem; padding: 2rem; color: var(--text-muted); border-top: 1px solid var(--border); font-size: 0.9rem; }\n" +
-                "    </style>\n" +
-                "</head>\n" +
-                "<body>\n" +
-                "    <div class="container">\n" +
-                "        <header>\n" +
-                "            <div class="logo-container">\n" +
-                "                <img src="logo.png" alt="Arte House 3D Logo" onerror="this.style.display='none'">\n" +
-                "            </div>\n" +
-                "            <h1>Arte House 3D</h1>\n" +
-                "            <p class="subtitle">Catálogo de Amostras & Produtos de Impressão 3D</p>\n" +
-                "            <a href="https://www.instagram.com/artehouse3d" target="_blank" class="social-link">📸 Instagram @artehouse3d</a>\n" +
-                "        </header>\n" +
-                "        <div class="filters" id="filters-container">\n" +
-                "            <button class="filter-btn active" onclick="filterCat('all')">Todos os Produtos</button>\n" +
-                "        </div>\n" +
-                "        <div id="catalog-content"></div>\n" +
-                "    </div>\n" +
-                "    <div class="lightbox" id="lightbox" onclick="closeLightbox()">\n" +
-                "        <button class="lightbox-close">&times;</button>\n" +
-                "        <img id="lightbox-img" src="" alt="Ampliada">\n" +
-                "    </div>\n" +
-                "    <script>\n" +
-                "        let catalogData = " + currentCatalogJSON + ";\n" +
-                "        let categories = " + currentCatsJSON + ";\n" +
-                "        let currentFilter = 'all';\n" +
-                "        function renderCatalog() {{\n" +
-                "            const fc = document.getElementById('filters-container');\n" +
-                "            fc.innerHTML = '<button class="filter-btn ' + (currentFilter === 'all' ? 'active' : '') + '" onclick="filterCat(\'all\')">Todos os Produtos</button>';\n" +
-                "            for(const [catId, catTitle] of Object.entries(categories)) {{\n" +
-                "                fc.innerHTML += '<button class="filter-btn ' + (currentFilter === catId ? 'active' : '') + '" onclick="filterCat(\'' + catId + '\')">' + catTitle + '</button>';\n" +
-                "            }}\n" +
-                "            const cc = document.getElementById('catalog-content');\n" +
-                "            cc.innerHTML = '';\n" +
-                "            for(const [catId, catTitle] of Object.entries(categories)) {{\n" +
-                "                if(currentFilter !== 'all' && currentFilter !== catId) continue;\n" +
-                "                const items = catalogData.filter(item => item.category === catId);\n" +
-                "                if(items.length === 0 && currentFilter === 'all') continue;\n" +
-                "                let gridHTML = '<section class="category-section" data-category="' + catId + '"><div class="category-header"><h2 class="category-title">' + catTitle + '</h2><p class="category-desc">Produtos e amostras da categoria ' + catTitle + '</p></div><div class="grid">';\n" +
-                "                if(items.length === 0) {{\n" +
-                "                    gridHTML += '<p style="color: var(--text-muted); grid-column: 1/-1;">Nenhum produto cadastrado nesta categoria ainda.</p>';\n" +
-                "                }} else {{\n" +
-                "                    items.forEach(item => {{\n" +
-                "                        gridHTML += '<div class="card"><div class="card-img-wrapper" onclick="openLightbox(\'' + item.path + '\')"><img src="' + item.path + '" alt="' + item.name + '" loading="lazy" onerror="this.src=\'https://via.placeholder.com/260x220?text=3D+Arte+House\'()"></div><div class="card-body"><div><div class="card-meta">' + (item.id ? '<span class="card-id-badge">' + item.id + '</span>' : '') + '<span class="card-badge">' + catTitle + '</span></div><h3 class="card-title" style="margin-top: 0.5rem;">' + item.name + '</h3></div></div></div>';\n" +
-                "                    }});\n" +
-                "                }}\n" +
-                "                gridHTML += '</div></section>';\n" +
-                "                cc.innerHTML += gridHTML;\n" +
-                "            }}\n" +
-                "        }}\n" +
-                "        function filterCat(cat) {{ currentFilter = cat; renderCatalog(); }}\n" +
-                "        function openLightbox(src) {{ document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').style.display = 'flex'; }}\n" +
-                "        function closeLightbox() {{ document.getElementById('lightbox').style.display = 'none'; }}\n" +
-                "        renderCatalog();\n" +
-                "    </script>\n" +
-                "</body>\n" +
-                "</html>";
-
-            const blob = new Blob([fileContent], { type: 'text/html;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'catalogo.html';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            alert("Arquivo 'catalogo.html' atualizado gerado com sucesso! Salve-o na pasta do seu projeto e faça git push para atualizar a Vercel.");
-        }
-
-        function renderCategoriesUI() {
-            const batchCat = document.getElementById('batch-cat');
-            const prodCat = document.getElementById('prod-cat');
-            const filterCat = document.getElementById('filter-prod-cat');
-            const catListContainer = document.getElementById('cat-list-container');
-            
-            batchCat.innerHTML = '';
-            prodCat.innerHTML = '';
-            
-            const currentFilterVal = filterCat.value;
-            filterCat.innerHTML = '<option value="all">Todas as Categorias</option>';
-            catListContainer.innerHTML = '';
-
-            for(const [key, val] of Object.entries(categories)) {
-                batchCat.innerHTML += '<option value="' + key + '">' + val + '</option>';
-                prodCat.innerHTML += '<option value="' + key + '">' + val + '</option>';
-                filterCat.innerHTML += '<option value="' + key + '">' + val + '</option>';
-                
-                catListContainer.innerHTML += 
-                    '<div class="cat-row">' +
-                        '<span><b>' + val + '</b> <small style="color:var(--text-muted);">(' + key + ')</small></span>' +
-                        '<button class="action-btn delete" onclick="deleteCategory('' + key + '')" title="Excluir Categoria">🗑️</button>' +
-                    '</div>';
-            }
-            filterCat.value = currentFilterVal;
+            state.categories[key] = title;
+            writeStore(KEYS.cats, state.categories);
+            e.target.reset();
+            renderAll();
+            alert(`Categoria "${title}" salva com sucesso!`);
         }
 
         function deleteCategory(key) {
-            if(Object.keys(categories).length <= 1) {
-                alert("Você precisa manter pelo menos uma categoria.");
+            const inUse = state.catalog.filter(p => p.category === key).length;
+            if (inUse) {
+                alert(`Esta categoria tem ${inUse} produto(s). Mova ou exclua esses produtos antes de removê-la.`);
                 return;
             }
-            if(confirm('Deseja realmente excluir a categoria "' + categories[key] + '"?')) {
-                delete categories[key];
-                localStorage.setItem('artehouse_cats', JSON.stringify(categories));
-                renderCategoriesUI();
-                renderProductsList();
-                alert("Categoria excluída com sucesso!");
+            if (Object.keys(state.categories).length <= 1) {
+                alert('Mantenha pelo menos uma categoria.');
+                return;
             }
+            if (!confirm(`Excluir a categoria "${state.categories[key]}"?`)) return;
+
+            delete state.categories[key];
+            writeStore(KEYS.cats, state.categories);
+            renderAll();
         }
 
-        function handleFileUpload(e) {
-            const files = e.target.files;
-            if(!files.length) return;
+        /* ---------- produtos ---------- */
 
-            const today = new Date().toISOString().split('T')[0];
-            let processed = 0;
+        /* ---------- produtos ---------- */
 
-            Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const newImg = {
-                        path: event.target.result,
-                        filename: file.name,
-                        date: today,
-                        timestamp: Date.now()
-                    };
-                    uploadedImages.unshift(newImg);
-                    imagePool.unshift(newImg);
-                    processed++;
-                    if(processed === files.length) {
-                        localStorage.setItem('artehouse_uploaded', JSON.stringify(uploadedImages));
-                        renderImagePool();
-                        alert(files.length + ' foto(s) enviada(s) com sucesso para a pool!');
+        function renderProducts() {
+            const filter = $('filter-cat').value;
+            const rows = state.catalog
+                .map((product, index) => ({ product, index }))
+                .filter(({ product }) => filter === 'all' || product.category === filter);
+
+            $('total-count').textContent = state.catalog.length;
+
+            const selectedVisible = rows.filter(({ product }) => state.selProducts.has(product)).length;
+            const selectAll = $('prod-select-visible');
+            selectAll.checked = rows.length > 0 && selectedVisible === rows.length;
+            selectAll.indeterminate = selectedVisible > 0 && selectedVisible < rows.length;
+
+            const n = state.selProducts.size;
+            $('sel-count').textContent = n;
+            ['btn-bulk-edit', 'btn-bulk-del', 'btn-bulk-up', 'btn-bulk-down', 'btn-bulk-clear']
+                .forEach(id => { $(id).disabled = n === 0; });
+            if (n === 0) $('bulk-form').hidden = true;
+
+            $('products-list').innerHTML = rows.length
+                ? rows.map(({ product, index }) => {
+                    const catName = state.categories[product.category];
+                    const checked = state.selProducts.has(product);
+                    return `
+                        <div class="item-row ${checked ? 'selected' : ''}">
+                            <input type="checkbox" class="prod-check" data-index="${index}" ${checked ? 'checked' : ''}
+                                   aria-label="Selecionar ${esc(product.name)}">
+                            <img class="item-thumb" src="${esc(product.path)}" alt="" loading="lazy">
+                            <div class="item-info">
+                                <div class="item-title">[${esc(product.id || 'SEM-ID')}] ${esc(product.name)}</div>
+                                <div class="item-cat ${catName ? '' : 'warn'}">${esc(catName ?? 'Categoria removida')}</div>
+                            </div>
+                            <div class="item-actions">
+                                <button type="button" class="action-btn" data-action="up" data-index="${index}" title="Subir" aria-label="Subir">⬆️</button>
+                                <button type="button" class="action-btn" data-action="down" data-index="${index}" title="Descer" aria-label="Descer">⬇️</button>
+                                <button type="button" class="action-btn" data-action="edit" data-index="${index}" title="Editar" aria-label="Editar">✏️</button>
+                                <button type="button" class="action-btn delete" data-action="delete" data-index="${index}" title="Excluir" aria-label="Excluir">🗑️</button>
+                            </div>
+                        </div>`;
+                }).join('')
+                : '<p class="empty">Nenhum produto nesta categoria.</p>';
+        }
+
+        function onProductCheck(e) {
+            if (!e.target.matches('.prod-check')) return;
+            const product = state.catalog[Number(e.target.dataset.index)];
+            if (e.target.checked) state.selProducts.add(product);
+            else state.selProducts.delete(product);
+            renderProducts();
+        }
+
+        function toggleSelectVisible(on) {
+            const filter = $('filter-cat').value;
+            state.catalog
+                .filter(p => filter === 'all' || p.category === filter)
+                .forEach(p => (on ? state.selProducts.add(p) : state.selProducts.delete(p)));
+            renderProducts();
+        }
+
+        function clearProductSelection() {
+            state.selProducts.clear();
+            renderProducts();
+        }
+
+        /* Move os itens de `selection` uma posição para cima (-1) ou para baixo (1),
+           considerando apenas os produtos visíveis no filtro atual. */
+        function reorderProducts(selection, direction) {
+            const filter = $('filter-cat').value;
+            const positions = [];
+            state.catalog.forEach((p, i) => {
+                if (filter === 'all' || p.category === filter) positions.push(i);
+            });
+            const items = positions.map(i => state.catalog[i]);
+            const order = items.map((_, i) => i);
+            if (direction > 0) order.reverse();
+
+            let moved = false;
+            for (const i of order) {
+                const j = i + direction;
+                if (!selection.has(items[i]) || j < 0 || j >= items.length || selection.has(items[j])) continue;
+                [items[i], items[j]] = [items[j], items[i]];
+                moved = true;
+            }
+            if (!moved) return;
+
+            positions.forEach((pos, k) => { state.catalog[pos] = items[k]; });
+            commitCatalog();
+        }
+
+        function moveProduct(index, direction) {
+            reorderProducts(new Set([state.catalog[index]]), direction);
+        }
+
+        function resetForm() {
+            $('product-form').reset();
+            state.editRef = null;
+            setFormPath('');
+            $('form-heading').textContent = 'Adicionar / editar produto';
+            $('btn-save').textContent = 'Salvar produto no catálogo';
+            $('cancel-btn').hidden = true;
+        }
+
+        function setFormPath(path) {
+            $('prod-path').value = path;
+            const preview = $('prod-preview');
+            preview.hidden = !path;
+            preview.src = path || '';
+        }
+
+        function onProductSubmit(e) {
+            e.preventDefault();
+            const product = {
+                id: $('prod-id').value.trim(),
+                name: $('prod-name').value.trim(),
+                category: $('prod-cat').value,
+                path: $('prod-path').value
+            };
+
+            if (!product.path) return alert('Selecione uma foto na pool ao lado.');
+            if (!product.category) return alert('Crie uma categoria antes de cadastrar produtos.');
+
+            const duplicated = state.catalog.some(p =>
+                p !== state.editRef && p.id && p.id.toLowerCase() === product.id.toLowerCase());
+            if (duplicated && !confirm(`Já existe um produto com o ID ${product.id}. Salvar mesmo assim?`)) return;
+
+            if (state.editRef) Object.assign(state.editRef, product);
+            else state.catalog.push(product);
+
+            resetForm();
+            commitCatalog();
+        }
+
+        function editProduct(index) {
+            const product = state.catalog[index];
+            state.editRef = product;
+            $('prod-id').value = product.id;
+            $('prod-name').value = product.name;
+            $('prod-cat').value = product.category;
+            setFormPath(product.path);
+            $('form-heading').textContent = 'Editar produto';
+            $('btn-save').textContent = 'Salvar alterações';
+            $('cancel-btn').hidden = false;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function deleteProduct(index) {
+            const product = state.catalog[index];
+            if (!confirm('Remover este produto do catálogo?')) return;
+            if (product === state.editRef) resetForm();
+            state.selProducts.delete(product);
+            state.catalog.splice(index, 1);
+            commitCatalog();
+        }
+
+        function deleteSelected() {
+            const n = state.selProducts.size;
+            if (!n || !confirm(`Excluir ${n} produto(s) selecionado(s)?`)) return;
+            state.catalog = state.catalog.filter(p => !state.selProducts.has(p));
+            state.selProducts.clear();
+            resetForm();
+            commitCatalog();
+        }
+
+        function applyBulkEdit(e) {
+            e.preventDefault();
+            const selected = state.catalog.filter(p => state.selProducts.has(p));
+            if (!selected.length) return;
+
+            const changeId = $('bulk-chk-id').checked;
+            const changeName = $('bulk-chk-name').checked;
+            const changeCat = $('bulk-chk-cat').checked;
+            if (!changeId && !changeName && !changeCat) {
+                alert('Marque pelo menos um campo para alterar.');
+                return;
+            }
+
+            const newId = $('bulk-id').value.trim();
+            const newName = $('bulk-name').value.trim();
+            const newCat = $('bulk-cat').value;
+            if (changeId && !newId) return alert('Informe o ID.');
+            if (changeName && !newName) return alert('Informe o nome.');
+            if (changeCat && !newCat) return alert('Escolha a categoria.');
+
+            const sequential = changeId && $('bulk-id-mode').value === 'seq';
+            const match = newId.match(/^(.*?)(\d+)$/);
+
+            selected.forEach((product, k) => {
+                if (changeId) {
+                    if (!sequential) {
+                        product.id = newId;
+                    } else if (match) {
+                        product.id = match[1] + String(parseInt(match[2], 10) + k).padStart(match[2].length, '0');
+                    } else {
+                        product.id = `${newId}-${k + 1}`;
                     }
-                };
+                }
+                if (changeName) product.name = newName;
+                if (changeCat) product.category = newCat;
+            });
+
+            state.selProducts.clear();
+            $('bulk-form').hidden = true;
+            commitCatalog();
+            alert(`${selected.length} produto(s) atualizado(s).`);
+        }
+
+        /* ---------- pool de imagens ---------- */
+
+        function selectedImages() {
+            return allImages().filter(img => state.selected.has(img.path));
+        }
+
+        function updatePoolCounts() {
+            $('selected-count').textContent = state.selected.size;
+            const n = selectedImages().length;
+            const btn = $('btn-del-uploads');
+            btn.textContent = `Excluir selecionadas (${n})`;
+            btn.disabled = n === 0;
+        }
+
+        function renderPool() {
+            const groups = new Map();
+            allImages().forEach((img, index) => {
+                if (!groups.has(img.date)) groups.set(img.date, []);
+                groups.get(img.date).push({ img, index });
+            });
+
+            $('image-pool').innerHTML = groups.size
+                ? [...groups].map(([date, items]) => `
+                    <section>
+                        <h3 class="date-group-title">📅 ${esc(date)} (${items.length} fotos)</h3>
+                        <div class="pool-grid">
+                            ${items.map(({ img, index }) => {
+                                const on = state.selected.has(img.path);
+                                return `
+                                    <div class="pool-item ${on ? 'selected' : ''}">
+                                        <input type="checkbox" class="pool-checkbox" data-index="${index}" ${on ? 'checked' : ''}
+                                               aria-label="Marcar ${esc(img.filename)}">
+                                        <button type="button" class="pool-del" data-action="del-image" data-index="${index}"
+                                                title="Excluir da pool" aria-label="Excluir ${esc(img.filename)}">✕</button>
+                                        <img src="${esc(img.path)}" alt="${esc(img.filename)}" title="${esc(img.filename)}"
+                                             loading="lazy" data-index="${index}">
+                                        <div class="pool-item-name" title="${esc(img.filename)}">${esc(img.filename)}</div>
+                                    </div>`;
+                            }).join('')}
+                        </div>
+                    </section>`).join('')
+                : '<p class="empty">A pool está vazia. Envie fotos no painel à esquerda.</p>';
+
+            updatePoolCounts();
+        }
+
+        function onPoolChange(e) {
+            if (!e.target.matches('.pool-checkbox')) return;
+            const img = allImages()[Number(e.target.dataset.index)];
+            if (e.target.checked) state.selected.add(img.path);
+            else state.selected.delete(img.path);
+            e.target.closest('.pool-item').classList.toggle('selected', e.target.checked);
+            updatePoolCounts();
+        }
+
+        function onPoolClick(e) {
+            const del = e.target.closest('button[data-action="del-image"]');
+            if (del) {
+                deleteImages([allImages()[Number(del.dataset.index)]]);
+                return;
+            }
+            if (e.target.tagName !== 'IMG') return;
+            const img = allImages()[Number(e.target.dataset.index)];
+            setFormPath(img.path);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* Fotos enviadas saem da lista de uploads. Fotos da pool fixa ficam ocultas
+           neste painel (o arquivo do projeto não é apagado). Produtos cadastrados
+           não são alterados. */
+        function deleteImages(items) {
+            const targets = items.filter(Boolean);
+            if (!targets.length) return;
+
+            const paths = new Set(targets.map(img => img.path));
+            const uploadCount = state.uploads.filter(u => paths.has(u.path)).length;
+            const hideCount = targets.length - uploadCount;
+
+            let msg = `Excluir ${targets.length} foto(s) da pool?`;
+            if (hideCount) msg += `\n${hideCount} delas são da pool fixa: somem deste painel, mas o arquivo continua no projeto.`;
+            if (!confirm(msg)) return;
+
+            state.uploads = state.uploads.filter(u => !paths.has(u.path));
+            paths.forEach(path => {
+                if (!state.uploads.some(u => u.path === path)) state.hidden.add(path);
+                state.selected.delete(path);
+            });
+            writeStore(KEYS.uploads, state.uploads);
+            writeStore(KEYS.hidden, [...state.hidden]);
+            renderPool();
+        }
+
+        function selectAllPool(select) {
+            if (select) {
+                allImages().forEach(img => state.selected.add(img.path));
+            } else {
+                state.selected.clear();
+            }
+            renderPool();
+        }
+
+        function addSelectedInBatch() {
+            if (state.selected.size === 0) return alert('Nenhuma foto marcada na pool.');
+
+            const category = $('batch-cat').value;
+            const name = $('batch-name').value.trim();
+            const baseId = $('batch-id').value.trim();
+            if (!category || !name || !baseId) return alert('Preencha ID, nome e categoria.');
+
+            const known = new Set(state.catalog.map(p => p.path));
+            const fresh = [...state.selected].filter(path => !known.has(path));
+            const skipped = state.selected.size - fresh.length;
+
+            const sequential = $('batch-id-mode').value === 'seq';
+            const match = baseId.match(/^(.*?)(\d+)$/);
+
+            fresh.forEach((path, k) => {
+                let id = baseId;
+                if (sequential) {
+                    id = match
+                        ? match[1] + String(parseInt(match[2], 10) + k).padStart(match[2].length, '0')
+                        : `${baseId}-${k + 1}`;
+                }
+                state.catalog.push({ id, name, category, path });
+            });
+
+            state.selected.clear();
+            commitCatalog();
+            renderPool();
+            alert(`${fresh.length} produto(s) adicionado(s).` + (skipped ? ` ${skipped} foto(s) já estavam no catálogo e foram ignoradas.` : ''));
+        }
+
+        function readAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(reader.error);
                 reader.readAsDataURL(file);
             });
         }
 
-        function renderImagePool() {
-            const poolContainer = document.getElementById('image-pool');
-            poolContainer.innerHTML = '';
+        async function onUpload(e) {
+            const input = e.target;
+            const files = [...input.files].filter(f => f.type.startsWith('image/'));
+            input.value = '';
+            if (!files.length) return;
 
-            const grouped = {};
-            imagePool.forEach(img => {
-                if(!grouped[img.date]) grouped[img.date] = [];
-                grouped[img.date].push(img);
-            });
-
-            for(const [date, imgs] of Object.entries(grouped)) {
-                let sectionHTML = '<div>' +
-                    '<div class="date-group-title">📅 Data: ' + date + ' (' + imgs.length + ' fotos)</div>' +
-                    '<div class="pool-grid">';
-                
-                imgs.forEach(img => {
-                    const isChecked = selectedPaths.has(img.path) ? 'checked' : '';
-                    const isSelectedClass = selectedPaths.has(img.path) ? 'selected' : '';
-                    const safePath = img.path.replace(/'/g, "\\'");
-                    const safeName = img.filename.replace(/'/g, "\\'");
-                    
-                    sectionHTML += '<div class="pool-item ' + isSelectedClass + '">' +
-                        '<input type="checkbox" class="pool-checkbox" ' + isChecked + ' onchange="toggleSelect('' + safePath + '')">' +
-                        '<img src="' + img.path + '" alt="' + img.filename + '" loading="lazy" title="' + img.filename + '" onclick="selectForForm('' + safePath + '', '' + safeName + '')">' +
-                        '<div class="pool-item-name" title="' + img.filename + '">' + img.filename + '</div>' +
-                    '</div>';
-                });
-                sectionHTML += '</div></div>';
-                poolContainer.innerHTML += sectionHTML;
+            try {
+                const date = todayLocal();
+                const created = await Promise.all(files.map(async file => ({
+                    path: await readAsDataURL(file),
+                    filename: file.name,
+                    date,
+                    timestamp: Date.now()
+                })));
+                state.uploads = [...created, ...state.uploads];
+                writeStore(KEYS.uploads, state.uploads);
+                renderPool();
+                alert(`${created.length} foto(s) adicionada(s) à pool.`);
+            } catch {
+                alert('Não foi possível ler um ou mais arquivos.');
             }
-            document.getElementById('selected-count').innerText = selectedPaths.size;
         }
 
-        function selectForForm(path, filename) {
-            document.getElementById('prod-path').value = path;
-            document.getElementById('prod-id').value = "CH-01";
-            document.getElementById('prod-name').value = "Chaveiro 3D";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        /* ---------- exportação ---------- */
+
+        function exportPublicCatalog() {
+            const inlineCount = state.catalog.filter(p => p.path.startsWith('data:')).length;
+            if (inlineCount && !confirm(
+                `${inlineCount} produto(s) usam fotos enviadas nesta sessão. Elas serão embutidas no HTML, deixando o arquivo pesado. ` +
+                'O ideal é copiar essas imagens para a pasta do projeto e ajustar o caminho. Continuar mesmo assim?')) return;
+
+            const payload = JSON.stringify({ catalog: state.catalog, categories: state.categories })
+                .replace(/</g, '\\u003c');
+            const html = PUBLIC_TEMPLATE.replace('__ARTEHOUSE_DATA__', () => payload);
+
+            const url = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' }));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'catalogo.html';
+            document.body.append(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+            alert("Arquivo 'catalogo.html' gerado. Coloque-o na raiz do projeto e faça commit/push para atualizar a Vercel.");
         }
 
-        function toggleSelect(path) {
-            if(selectedPaths.has(path)) {
-                selectedPaths.delete(path);
-            } else {
-                selectedPaths.add(path);
-            }
-            renderImagePool();
-        }
+        /* ---------- reset e eventos ---------- */
 
-        function selectAllPool(select) {
-            if(select) {
-                imagePool.forEach(img => selectedPaths.add(img.path));
-            } else {
-                selectedPaths.clear();
-            }
-            renderImagePool();
-        }
-
-        function addSelectedInBatch() {
-            if(selectedPaths.size === 0) {
-                alert('Nenhuma foto marcada na pool.');
-                return;
-            }
-            const catKey = document.getElementById('batch-cat').value;
-            const baseId = document.getElementById('batch-id').value.trim() || "CH-01";
-            const baseName = document.getElementById('batch-name').value.trim() || "Chaveiro 3D";
-            
-            let prefix = baseId;
-            let num = 1;
-            const match = baseId.match(/^(.*?)(\d+)$/);
-            if(match) {
-                prefix = match[1];
-                num = parseInt(match[2], 10);
-            }
-
-            let addedCount = 0;
-            selectedPaths.forEach(path => {
-                const currentId = match ? (prefix + String(num++).padStart(2, '0')) : (baseId + '-' + (addedCount+1));
-                catalogData.push({
-                    id: currentId,
-                    name: baseName,
-                    category: catKey,
-                    path: path
-                });
-                addedCount++;
-            });
-
-            selectedPaths.clear();
-            renderProductsList();
-            renderImagePool();
-            alert(addedCount + ' produtos adicionados em lote com sucesso!');
-        }
-
-        function saveProduct(e) {
-            e.preventDefault();
-            const editIndex = document.getElementById('edit-index').value;
-            const id = document.getElementById('prod-id').value.trim();
-            const name = document.getElementById('prod-name').value.trim();
-            const category = document.getElementById('prod-cat').value;
-            const path = document.getElementById('prod-path').value;
-
-            if(!path) {
-                alert('Por favor, selecione uma foto da pool de imagens ao lado.');
-                return;
-            }
-
-            if(editIndex === "") {
-                catalogData.push({ id, name, category, path });
-            } else {
-                catalogData[editIndex] = { id, name, category, path };
-            }
-
+        function resetAll() {
+            if (!confirm('Apagar alterações salvas neste navegador e restaurar o padrão?')) return;
+            Object.values(KEYS).forEach(key => localStorage.removeItem(key));
+            state.selected.clear();
+            state.selProducts.clear();
             resetForm();
-            renderProductsList();
-            alert("Produto salvo com sucesso!");
+            init();
         }
 
-        function editProduct(globalIndex) {
-            const prod = catalogData[globalIndex];
-            document.getElementById('edit-index').value = globalIndex;
-            document.getElementById('prod-id').value = prod.id || '';
-            document.getElementById('prod-name').value = prod.name;
-            document.getElementById('prod-cat').value = prod.category;
-            document.getElementById('prod-path').value = prod.path;
-            document.getElementById('form-heading').innerText = "Editar Produto";
-            document.getElementById('cancel-btn').style.display = "block";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        $('product-form').addEventListener('submit', onProductSubmit);
+        $('cancel-btn').addEventListener('click', resetForm);
+        $('cat-form').addEventListener('submit', onAddCategory);
+        $('btn-batch').addEventListener('click', addSelectedInBatch);
+        $('btn-export').addEventListener('click', exportPublicCatalog);
+        $('btn-reset').addEventListener('click', resetAll);
+        $('btn-select-all').addEventListener('click', () => selectAllPool(true));
+        $('btn-select-none').addEventListener('click', () => selectAllPool(false));
+        $('upload-files').addEventListener('change', onUpload);
+        $('filter-cat').addEventListener('change', renderProducts);
+        $('image-pool').addEventListener('change', onPoolChange);
+        $('image-pool').addEventListener('click', onPoolClick);
+
+        $('products-list').addEventListener('click', e => {
+            const btn = e.target.closest('button[data-action]');
+            if (!btn) return;
+            const index = Number(btn.dataset.index);
+            const actions = {
+                up: () => moveProduct(index, -1),
+                down: () => moveProduct(index, 1),
+                edit: () => editProduct(index),
+                delete: () => deleteProduct(index)
+            };
+            actions[btn.dataset.action]?.();
+        });
+
+        $('prod-select-visible').addEventListener('change', e => toggleSelectVisible(e.target.checked));
+        $('products-list').addEventListener('change', onProductCheck);
+        $('btn-bulk-edit').addEventListener('click', () => { $('bulk-form').hidden = false; });
+        $('bulk-cancel').addEventListener('click', () => { $('bulk-form').hidden = true; });
+        $('bulk-form').addEventListener('submit', applyBulkEdit);
+        $('btn-bulk-del').addEventListener('click', deleteSelected);
+        $('btn-bulk-up').addEventListener('click', () => reorderProducts(state.selProducts, -1));
+        $('btn-bulk-down').addEventListener('click', () => reorderProducts(state.selProducts, 1));
+        $('btn-bulk-clear').addEventListener('click', clearProductSelection);
+        $('btn-del-uploads').addEventListener('click', () => deleteImages(selectedImages()));
+
+        $('cat-list').addEventListener('click', e => {
+            const btn = e.target.closest('button[data-action="del-cat"]');
+            if (btn) deleteCategory(btn.dataset.key);
+        });
+
+        const PUBLIC_TEMPLATE = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Amostras - Arte House 3D</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #FAF8F5;
+            --bg-secondary: #F2EEE9;
+            --bg-card: #FFFFFF;
+            --accent: #D9A3B1;
+            --accent-dark: #BF9FA7;
+            --text-main: #3F403C;
+            --text-muted: #7A7872;
+            --border: #E6E1DA;
         }
-
-        function resetForm() {
-            document.getElementById('product-form').reset();
-            document.getElementById('edit-index').value = "";
-            document.getElementById('form-heading').innerText = "Adicionar / Editar Produto";
-            document.getElementById('cancel-btn').style.display = "none";
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        [hidden] { display: none !important; }
+        body {
+            font-family: Inter, system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem 1rem;
         }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 2rem; }
+        .logo { max-height: 90px; margin-bottom: 0.5rem; }
+        header h1 { font-size: 2.2rem; color: var(--accent-dark); }
+        .subtitle { color: var(--text-muted); margin: 0.25rem 0 0.75rem; }
+        .social-link { color: var(--accent-dark); text-decoration: none; font-weight: 600; }
+        .filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-bottom: 2.5rem; }
+        .filter-btn {
+            border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main);
+            padding: 0.45rem 1rem; border-radius: 999px; cursor: pointer; font: inherit; font-size: 0.9rem;
+        }
+        .filter-btn:hover, .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .category-section { margin-bottom: 3rem; }
+        .category-title { font-size: 1.5rem; margin-bottom: 1rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem; }
+        .empty { color: var(--text-muted); grid-column: 1 / -1; }
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; overflow: hidden;
+        }
+        .card-img { display: block; width: 100%; border: 0; padding: 0; cursor: zoom-in; background: var(--bg-secondary); }
+        .card-img img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; }
+        .card-meta { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0.9rem 1rem 0; }
+        .badge { font-size: 0.72rem; padding: 0.2rem 0.55rem; border-radius: 4px; font-weight: 600; }
+        .badge-id { background: rgba(99, 102, 241, 0.15); color: #6366f1; }
+        .badge-cat { background: rgba(217, 163, 177, 0.2); color: #b07080; }
+        .card-title { font-size: 1rem; font-weight: 600; padding: 0.5rem 1rem 1rem; }
+        .lightbox {
+            position: fixed; inset: 0; z-index: 1000; display: flex;
+            justify-content: center; align-items: center; padding: 2rem;
+            background: rgba(0, 0, 0, 0.85);
+        }
+        .lightbox img { max-width: 90%; max-height: 85vh; border-radius: 8px; }
+        .lightbox-close {
+            position: absolute; top: 16px; right: 24px; color: #fff;
+            background: none; border: 0; font-size: 2.2rem; cursor: pointer;
+        }
+        footer {
+            text-align: center; margin-top: 4rem; padding: 2rem;
+            color: var(--text-muted); border-top: 1px solid var(--border); font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img class="logo" src="logo.png" alt="Arte House 3D" onerror="this.remove()">
+            <h1>Arte House 3D</h1>
+            <p class="subtitle">Catálogo de amostras & produtos de impressão 3D</p>
+            <a class="social-link" href="https://www.instagram.com/artehouse3d" target="_blank" rel="noopener">📸 Instagram @artehouse3d</a>
+        </header>
+        <nav class="filters" id="filters" aria-label="Categorias"></nav>
+        <main id="catalog"></main>
+        <footer>© Arte House 3D</footer>
+    </div>
 
-        function renderProductsList() {
-            const list = document.getElementById('products-list');
-            const filterCatVal = document.getElementById('filter-prod-cat').value;
-            document.getElementById('total-count').innerText = catalogData.length;
-            list.innerHTML = '';
-            
-            let displayedItems = catalogData.map((prod, idx) => ({ ...prod, globalIndex: idx }));
-            if(filterCatVal !== 'all') {
-                displayedItems = displayedItems.filter(item => item.category === filterCatVal);
-            }
+    <div class="lightbox" id="lightbox" hidden>
+        <button class="lightbox-close" aria-label="Fechar">&times;</button>
+        <img id="lightbox-img" alt="">
+    </div>
 
-            if(displayedItems.length === 0) {
-                list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 1rem;">Nenhum produto encontrado nesta categoria.</p>';
-                return;
-            }
+    <script>
+        const DATA = __ARTEHOUSE_DATA__;
+        const PLACEHOLDER = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="260" height="220"><rect width="100%" height="100%" fill="#F2EEE9"/><text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#7A7872" font-family="sans-serif" font-size="16">Arte House 3D</text></svg>'
+        );
+        const state = { filter: 'all' };
 
-            displayedItems.forEach((prod, displayIndex) => {
-                const catName = categories[prod.category] || '<span style="color: var(--danger)">Categoria Removida</span>';
-                const gIdx = prod.globalIndex;
-                list.innerHTML += 
-                    '<div class="item-row">' +
-                        '<img src="' + prod.path + '" class="item-thumb" onerror="this.src='https://via.placeholder.com/50?text=3D'">' +
-                        '<div class="item-info">' +
-                            '<div class="item-title">[' + (prod.id || 'SEM-ID') + '] ' + prod.name + '</div>' +
-                            '<div class="item-cat">' + catName + '</div>' +
-                        '</div>' +
-                        '<div class="item-actions">' +
-                            '<button class="action-btn" onclick="moveProduct(' + gIdx + ', -1)" title="Subir">⬆️</button>' +
-                            '<button class="action-btn" onclick="moveProduct(' + gIdx + ', 1)" title="Descer">⬇️</button>' +
-                            '<button class="action-btn" onclick="editProduct(' + gIdx + ')" title="Editar">✏️</button>' +
-                            '<button class="action-btn delete" onclick="deleteProduct(' + gIdx + ')" title="Excluir">🗑️</button>' +
-                        '</div>' +
-                    '</div>';
+        function h(tag, attrs, ...children) {
+            const node = document.createElement(tag);
+            Object.entries(attrs || {}).forEach(([key, value]) => {
+                if (key === 'text') node.textContent = value;
+                else if (key.startsWith('on')) node.addEventListener(key.slice(2), value);
+                else node.setAttribute(key, value);
             });
-            localStorage.setItem('artehouse_catalog', JSON.stringify(catalogData));
+            node.append(...children.filter(child => child != null));
+            return node;
         }
 
-        function moveProduct(index, direction) {
-            const newIndex = index + direction;
-            if (newIndex < 0 || newIndex >= catalogData.length) return;
-            const temp = catalogData[index];
-            catalogData[index] = catalogData[newIndex];
-            catalogData[newIndex] = temp;
-            renderProductsList();
+        function card(item, catTitle) {
+            const img = h('img', { src: item.path, alt: item.name, loading: 'lazy' });
+            img.addEventListener('error', () => { img.src = PLACEHOLDER; }, { once: true });
+
+            return h('article', { class: 'card' },
+                h('button', {
+                    class: 'card-img', type: 'button', 'aria-label': 'Ampliar ' + item.name,
+                    onclick: () => openLightbox(item.path, item.name)
+                }, img),
+                h('div', { class: 'card-meta' },
+                    item.id ? h('span', { class: 'badge badge-id', text: item.id }) : null,
+                    h('span', { class: 'badge badge-cat', text: catTitle })),
+                h('h3', { class: 'card-title', text: item.name })
+            );
         }
 
-        function deleteProduct(index) {
-            if(confirm("Deseja remover este produto do catálogo?")) {
-                catalogData.splice(index, 1);
-                renderProductsList();
-            }
+        function renderFilters() {
+            const box = document.getElementById('filters');
+            const make = (key, label) => h('button', {
+                type: 'button',
+                class: 'filter-btn' + (state.filter === key ? ' active' : ''),
+                text: label,
+                onclick: () => { state.filter = key; render(); }
+            });
+            box.replaceChildren(
+                make('all', 'Todos os produtos'),
+                ...Object.entries(DATA.categories).map(([key, title]) => make(key, title))
+            );
         }
 
-        function addCategory(e) {
-            e.preventDefault();
-            const id = document.getElementById('cat-id').value.trim().toLowerCase().replace(/\s+/g, '-');
-            const title = document.getElementById('cat-title').value.trim();
-            if(id && title) {
-                categories[id] = title;
-                localStorage.setItem('artehouse_cats', JSON.stringify(categories));
-                renderCategoriesUI();
-                renderProductsList();
-                alert('Categoria "' + title + '" criada com sucesso!');
-                document.getElementById('cat-id').value = '';
-                document.getElementById('cat-title').value = '';
-            }
+        function renderCatalog() {
+            const root = document.getElementById('catalog');
+            root.replaceChildren();
+
+            Object.entries(DATA.categories).forEach(([key, title]) => {
+                if (state.filter !== 'all' && state.filter !== key) return;
+                const items = DATA.catalog.filter(p => p.category === key);
+                if (!items.length && state.filter === 'all') return;
+
+                const grid = h('div', { class: 'grid' },
+                    ...(items.length
+                        ? items.map(item => card(item, title))
+                        : [h('p', { class: 'empty', text: 'Nenhum produto cadastrado nesta categoria ainda.' })]));
+
+                root.append(h('section', { class: 'category-section' },
+                    h('h2', { class: 'category-title', text: title }),
+                    grid));
+            });
         }
+
+        function render() {
+            renderFilters();
+            renderCatalog();
+        }
+
+        function openLightbox(src, alt) {
+            const img = document.getElementById('lightbox-img');
+            img.src = src;
+            img.alt = alt;
+            document.getElementById('lightbox').hidden = false;
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').hidden = true;
+        }
+
+        document.getElementById('lightbox').addEventListener('click', e => {
+            if (e.target.id !== 'lightbox-img') closeLightbox();
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        render();
+    <\/script>
+</body>
+</html>`;
 
         init();
     </script>
