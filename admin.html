@@ -160,7 +160,10 @@
             <div class="toolbar">
                 <button type="button" id="btn-export" class="btn btn-success" title="Gera o catalogo.html atualizado para subir no projeto">📥 Baixar catalogo.html</button>
                 <a href="catalogo.html" target="_blank" rel="noopener" class="btn btn-dark">Ver catálogo ↗</a>
-                <button type="button" id="btn-reset" class="btn btn-danger" title="Apaga alterações locais e restaura o padrão">Limpar cache</button>
+                <button type="button" id="btn-backup" class="btn btn-dark" title="Baixa um arquivo com todo o trabalho salvo">💾 Exportar backup</button>
+                <button type="button" id="btn-restore" class="btn btn-dark" title="Carrega um backup salvo anteriormente">📂 Importar backup</button>
+                <input type="file" id="restore-file" accept="application/json,.json" hidden>
+                <div id="storage-info" class="muted" style="width:100%; text-align:right; font-size:0.8rem;"></div>
             </div>
         </header>
 
@@ -344,27 +347,90 @@
         const slugify = text => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
             .toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-        function readStore(key, fallback) {
+        /* ---------- armazenamento (IndexedDB) ----------
+           O localStorage aceita só ~5 MB e as fotos enviadas ficam em base64,
+           por isso o trabalho salvo fica no IndexedDB (centenas de MB). */
+
+        const DB_NAME = 'artehouse-admin';
+        const DB_STORE = 'kv';
+        let dbPromise = null;
+
+        function openDB() {
+            if (!dbPromise) {
+                dbPromise = new Promise((resolve, reject) => {
+                    const req = indexedDB.open(DB_NAME, 1);
+                    req.onupgradeneeded = () => req.result.createObjectStore(DB_STORE);
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => reject(req.error);
+                });
+            }
+            return dbPromise;
+        }
+
+        async function kvGet(key) {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+                const req = db.transaction(DB_STORE).objectStore(DB_STORE).get(key);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        async function kvSet(key, value) {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(DB_STORE, 'readwrite');
+                tx.objectStore(DB_STORE).put(value, key);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+                tx.onabort = () => reject(tx.error);
+            });
+        }
+
+        /* Copia os dados antigos do localStorage (versões anteriores) para o IndexedDB. */
+        async function migrateFromLocalStorage() {
+            for (const key of Object.values(KEYS)) {
+                let raw = null;
+                try { raw = localStorage.getItem(key); } catch { continue; }
+                if (raw === null) continue;
+                try {
+                    if ((await kvGet(key)) === undefined) await kvSet(key, JSON.parse(raw));
+                    localStorage.removeItem(key);
+                } catch (err) {
+                    console.warn('Não foi possível migrar', key, err);
+                }
+            }
+        }
+
+        async function readStore(key, fallback) {
             try {
-                const value = JSON.parse(localStorage.getItem(key));
+                const value = await kvGet(key);
                 return value ?? fallback;
-            } catch {
+            } catch (err) {
+                console.warn('Falha ao ler', key, err);
                 return fallback;
             }
         }
 
-        function writeStore(key, value) {
+        async function writeStore(key, value) {
             try {
-                localStorage.setItem(key, JSON.stringify(value));
+                await kvSet(key, value);
+                refreshStorageInfo();
                 return true;
             } catch (err) {
-                if (err && err.name === 'QuotaExceededError') {
-                    alert('O armazenamento do navegador está cheio. As alterações valem nesta sessão, mas podem se perder ao recarregar. Use imagens menores ou limpe fotos antigas.');
-                } else {
-                    console.warn('Não foi possível salvar', key, err);
-                }
+                console.error('Falha ao salvar', key, err);
+                alert('Não foi possível salvar esta alteração (espaço insuficiente ou armazenamento bloqueado). Exporte um backup antes de continuar.');
                 return false;
             }
+        }
+
+        async function refreshStorageInfo() {
+            if (!navigator.storage || !navigator.storage.estimate) return;
+            try {
+                const { usage, quota } = await navigator.storage.estimate();
+                const mb = n => (n / 1048576).toFixed(1);
+                $('storage-info').textContent = `Armazenamento usado: ${mb(usage)} MB de ${mb(quota)} MB disponíveis`;
+            } catch { /* indicador é opcional */ }
         }
 
         function sanitizeCatalog(list) {
@@ -380,15 +446,24 @@
 
         /* ---------- persistência e render geral ---------- */
 
-        function init() {
-            state.catalog = sanitizeCatalog(readStore(KEYS.catalog, DEFAULT_CATALOG));
-            const cats = readStore(KEYS.cats, null);
+        async function init() {
+            try {
+                await migrateFromLocalStorage();
+            } catch (err) {
+                console.warn('Migração não concluída', err);
+            }
+
+            state.catalog = sanitizeCatalog(await readStore(KEYS.catalog, DEFAULT_CATALOG));
+            const cats = await readStore(KEYS.cats, null);
             state.categories = cats && typeof cats === 'object' && Object.keys(cats).length ? cats : { ...DEFAULT_CATEGORIES };
-            const uploads = readStore(KEYS.uploads, []);
+            const uploads = await readStore(KEYS.uploads, []);
             state.uploads = Array.isArray(uploads) ? uploads : [];
-            const hidden = readStore(KEYS.hidden, []);
+            const hidden = await readStore(KEYS.hidden, []);
             state.hidden = new Set(Array.isArray(hidden) ? hidden.filter(x => typeof x === 'string') : []);
+
             renderAll();
+            if (navigator.storage && navigator.storage.persist) navigator.storage.persist();
+            refreshStorageInfo();
         }
 
         function renderAll() {
@@ -862,13 +937,57 @@
 
         /* ---------- reset e eventos ---------- */
 
-        function resetAll() {
-            if (!confirm('Apagar alterações salvas neste navegador e restaurar o padrão?')) return;
-            Object.values(KEYS).forEach(key => localStorage.removeItem(key));
+        /* ---------- backup ---------- */
+
+        function exportBackup() {
+            const data = {
+                version: 1,
+                exportedAt: new Date().toISOString(),
+                catalog: state.catalog,
+                categories: state.categories,
+                uploads: state.uploads,
+                hidden: [...state.hidden]
+            };
+            const url = URL.createObjectURL(new Blob([JSON.stringify(data)], { type: 'application/json' }));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `artehouse-backup-${todayLocal()}.json`;
+            document.body.append(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        async function importBackup(file) {
+            let data;
+            try {
+                data = JSON.parse(await file.text());
+            } catch {
+                alert('Arquivo inválido: não é um JSON.');
+                return;
+            }
+            if (!data || !Array.isArray(data.catalog) || !data.categories || typeof data.categories !== 'object' || !Array.isArray(data.uploads)) {
+                alert('Arquivo de backup inválido.');
+                return;
+            }
+            if (!confirm('Substituir o trabalho atual pelo conteúdo deste backup?')) return;
+
+            state.catalog = sanitizeCatalog(data.catalog);
+            state.categories = Object.keys(data.categories).length ? data.categories : { ...DEFAULT_CATEGORIES };
+            state.uploads = data.uploads;
+            state.hidden = new Set(Array.isArray(data.hidden) ? data.hidden : []);
             state.selected.clear();
             state.selProducts.clear();
             resetForm();
-            init();
+
+            await Promise.all([
+                writeStore(KEYS.catalog, state.catalog),
+                writeStore(KEYS.cats, state.categories),
+                writeStore(KEYS.uploads, state.uploads),
+                writeStore(KEYS.hidden, [...state.hidden])
+            ]);
+            renderAll();
+            alert('Backup restaurado com sucesso.');
         }
 
         $('product-form').addEventListener('submit', onProductSubmit);
@@ -876,7 +995,13 @@
         $('cat-form').addEventListener('submit', onAddCategory);
         $('btn-batch').addEventListener('click', addSelectedInBatch);
         $('btn-export').addEventListener('click', exportPublicCatalog);
-        $('btn-reset').addEventListener('click', resetAll);
+        $('btn-backup').addEventListener('click', exportBackup);
+        $('btn-restore').addEventListener('click', () => $('restore-file').click());
+        $('restore-file').addEventListener('change', e => {
+            const file = e.target.files[0];
+            e.target.value = '';
+            if (file) importBackup(file);
+        });
         $('btn-select-all').addEventListener('click', () => selectAllPool(true));
         $('btn-select-none').addEventListener('click', () => selectAllPool(false));
         $('upload-files').addEventListener('change', onUpload);
