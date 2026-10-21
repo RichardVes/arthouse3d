@@ -1,7 +1,4 @@
 {
   "version": 2,
-  "public": true,
-  "routes": [
-    { "src": "/", "dest": "/catalogo.html" }
-  ]
+  "routes": [{ "src": "/", "dest": "/catalogo.html" }]
 }
