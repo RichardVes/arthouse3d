@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel ADM & Pool de Imagens - Arte House 3D</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --accent: #38bdf8;
+            --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
+            --danger: #ef4444;
+            --success: #22c55e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --radius: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem 2rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .btn {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.2s;
+            display: inline-block;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 2rem;
+        }
+        @media(max-width: 1000px) {
+            .layout { grid-template-columns: 1fr; }
+        }
+
+        .panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .panel h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-family: inherit;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .cat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 180px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+        .cat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-primary);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .pool-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-height: 700px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+        .date-group-title {
+            font-size: 1.1rem;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+        .pool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 0.75rem;
+        }
+        .pool-item {
+            background: var(--bg-primary);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .pool-item.selected {
+            border-color: var(--success);
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+        }
+        .pool-item img {
+            width: 100%;
+            height: 90px;
+            object-fit: cover;
+        }
+        .pool-item-name {
+            font-size: 0.7rem;
+            padding: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-muted);
+        }
+        .pool-checkbox {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-height: 450px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+        .item-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--bg-primary);
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .item-thumb {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+        .item-info {
+            flex-grow: 1;
+        }
+        .item-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .item-cat {
+            font-size: 0.75rem;
+            color: var(--accent);
+        }
+        .item-actions {
+            display: flex;
+            gap: 0.3rem;
+            align-items: center;
+        }
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.85rem;
+            padding: 0.3rem 0.5rem;
+            border-radius: 4px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+        }
+        .action-btn:hover { color: var(--accent); background: var(--border); }
+        .action-btn.delete:hover { color: var(--danger); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>Painel ADM & Pool de Imagens</h1>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Gerencie IDs, ordens, categorias e lotes para o catálogo</p>
+            </div>
+            <div>
+                <a href="catalogo.html" target="_blank" class="btn btn-success">Ver Catálogo Público ↗</a>
+                <button onclick="resetLocalStorage()" class="btn btn-danger" style="margin-left: 0.5rem;" title="Restaurar padrão">Limpar Cache</button>
+            </div>
+        </header>
+
+        <div class="layout">
+            <!-- Esquerda: Ações e Formulário -->
+            <div>
+                <!-- 1. Adicionar / Editar Produto -->
+                <div class="panel">
+                    <h2 id="form-heading">Adicionar / Editar Produto</h2>
+                    <form id="product-form" onsubmit="saveProduct(event)">
+                        <input type="hidden" id="edit-index" value="">
+                        <div class="form-group">
+                            <label>Foto Selecionada</label>
+                            <input type="text" id="prod-path" required placeholder="Clique em uma foto na pool ao lado" readonly style="background: #111; color: var(--accent);">
+                        </div>
+                        <div class="form-group">
+                            <label>ID / Código de Identificação (ex: CH-01)</label>
+                            <input type="text" id="prod-id" required placeholder="Ex: CH-01" value="CH-01">
+                        </div>
+                        <div class="form-group">
+                            <label>Nome do Produto</label>
+                            <input type="text" id="prod-name" required placeholder="Ex: Chaveiro Deadpool">
+                        </div>
+                        <div class="form-group">
+                            <label>Categoria</label>
+                            <select id="prod-cat" required>
+                                <!-- Preenchido via JS -->
+                            </select>
+                        </div>
+                        <button type="submit" class="btn" style="width: 100%;">Salvar Produto no Catálogo</button>
+                        <button type="button" id="cancel-btn" class="btn btn-danger" style="width: 100%; margin-top: 0.5rem; display: none;" onclick="resetForm()">Cancelar Edição</button>
+                    </form>
+                </div>
+
+                <!-- 2. Adicionar em Lote -->
+                <div class="panel">
+                    <h2>⚡ Adicionar Selecionadas em Lote</h2>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Marque várias fotos na pool para criá-las em lote com um ID base.</p>
+                    <div class="form-group">
+                        <label>ID Base (ex: CH-01)</label>
+                        <input type="text" id="batch-id" placeholder="Ex: CH-01" required value="CH-01">
+                    </div>
+                    <div class="form-group">
+                        <label>Nome do Produto</label>
+                        <input type="text" id="batch-name" placeholder="Ex: Chaveiro Deadpool" required value="Chaveiro Colecionável">
+                    </div>
+                    <div class="form-group">
+                        <label>Categoria de Destino</label>
+                        <select id="batch-cat">
+                            <!-- Preenchido via JS -->
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-success" style="width: 100%;" onclick="addSelectedInBatch()">Adicionar Marcadas (<span id="selected-count">0</span>)</button>
+                </div>
+
+                <!-- 3. Gerenciar Categorias -->
+                <div class="panel">
+                    <h2>🏷️ Gerenciar Categorias</h2>
+                    <div class="cat-list" id="cat-list-container"></div>
+                    <form onsubmit="addCategory(event)">
+                        <div class="form-group">
+                            <label>ID da Categoria (ex: chaveiros)</label>
+                            <input type="text" id="cat-id" required placeholder="ex: chaveiros">
+                        </div>
+                        <div class="form-group">
+                            <label>Nome Exibido</label>
+                            <input type="text" id="cat-title" required placeholder="Ex: Chaveiros 3D">
+                        </div>
+                        <button type="submit" class="btn" style="width: 100%;">Criar Categoria</button>
+                    </form>
+                </div>
+
+                <!-- 4. Upload de Fotos -->
+                <div class="panel">
+                    <h2>📥 Enviar Novas Fotos</h2>
+                    <div class="form-group">
+                        <label>Selecione fotos do seu computador</label>
+                        <input type="file" id="upload-files" multiple accept="image/*" onchange="handleFileUpload(event)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Direita: Lista de Produtos & Pool de Imagens -->
+            <div>
+                <!-- Produtos Cadastrados com Filtro por Categoria e Ordenação -->
+                <div class="panel">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                        <h2 style="margin: 0; border: none; padding: 0;">📦 Produtos Cadastrados (<span id="total-count">0</span>)</h2>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <label style="margin: 0; font-size: 0.8rem;">Filtrar Categoria:</label>
+                            <select id="filter-prod-cat" onchange="renderProductsList()" style="padding: 0.4rem; font-size: 0.85rem; width: 160px;">
+                                <option value="all">Todas as Categorias</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="items-list" id="products-list"></div>
+                </div>
+
+                <!-- Pool de Imagens -->
+                <div class="panel">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h2 style="margin: 0; border: none; padding: 0;">Pool de Imagens (Por Data)</h2>
+                        <div>
+                            <button class="btn btn-sm" onclick="selectAllPool(true)" style="background: var(--border); color: white;">Marcar Todas</button>
+                            <button class="btn btn-sm" onclick="selectAllPool(false)" style="background: var(--border); color: white; margin-left: 0.3rem;">Desmarcar</button>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Clique em uma foto para preencher o formulário ou marque para lote.</p>
+                    <div class="pool-container" id="image-pool"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let diskImages = [{"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.10 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.10 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1303678}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.10 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.10 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1283658}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.10.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.10.jpeg", "date": "2026-10-21", "timestamp": 1792587469.1263688}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.09 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.09 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1253679}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.09 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.09 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.12337}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.09.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.09.jpeg", "date": "2026-10-21", "timestamp": 1792587469.121367}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.08 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.08 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1203713}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.08 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.08 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.118367}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.08.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.08.jpeg", "date": "2026-10-21", "timestamp": 1792587469.1173682}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.07 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.07 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1153662}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.07 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.07 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1143696}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.07.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.07.jpeg", "date": "2026-10-21", "timestamp": 1792587469.1123664}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.06 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.06 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.111366}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.06 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.06 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1093664}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.06.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.06.jpeg", "date": "2026-10-21", "timestamp": 1792587469.108366}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.05 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.05 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1063678}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.05 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.05 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1053658}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.05.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.05.jpeg", "date": "2026-10-21", "timestamp": 1792587469.1033685}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.04 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.04 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.102369}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.04 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.04 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1013675}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.04.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.04.jpeg", "date": "2026-10-21", "timestamp": 1792587469.099367}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.03 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.03 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.097366}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.03 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.03 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0963702}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.03.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.03.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0953662}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.02 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.02 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0933664}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.02 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.02 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0923657}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.02.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.02.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0903685}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.01 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.01 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0893655}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.01.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.01.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0873659}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.53.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.53.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0863662}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.51 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.51 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0843675}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.51.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.51.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0823681}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.50 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.50 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.081368}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.50.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.50.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0793674}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.49 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.49 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0783675}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.49.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.49.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0763657}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.48.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.48.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0753655}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.47 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.47 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.073366}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.47.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.47.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0723655}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.46 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.46 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0713658}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.46.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.46.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0693667}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.45 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.45 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0683656}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.45.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.45.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0663662}, {"path": "image_cf03c98f.jpg", "filename": "image_cf03c98f.jpg", "date": "2026-09-30", "timestamp": 1790793532.5169308}, {"path": "toto/WhatsApp Image 2026-09-30 at 14.34.48.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.34.48.jpeg", "date": "2026-09-30", "timestamp": 1790793346.971881}, {"path": "image_3d7a585c.jpg", "filename": "image_3d7a585c.jpg", "date": "2026-09-30", "timestamp": 1790792799.3646607}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.32 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.32 (1).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6415715}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.32.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.32.jpeg", "date": "2026-09-30", "timestamp": 1790792628.640585}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.31 (3).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.31 (3).jpeg", "date": "2026-09-30", "timestamp": 1790792628.639574}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.31 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.31 (2).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6375716}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.31 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.31 (1).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6365705}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.31.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.31.jpeg", "date": "2026-09-30", "timestamp": 1790792628.634571}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.30 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.30 (2).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6335657}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.30 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.30 (1).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6320617}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.30.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.30.jpeg", "date": "2026-09-30", "timestamp": 1790792628.630062}, {"path": "image_15fc3d72.jpg", "filename": "image_15fc3d72.jpg", "date": "2026-09-30", "timestamp": 1790792602.989645}, {"path": "toto/WhatsApp Image 2026-09-30 at 14.06.47 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.47 (2).jpeg", "date": "2026-09-30", "timestamp": 1790792479.9290528}, {"path": "toto/WhatsApp Image 2026-09-30 at 14.06.47 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.47 (1).jpeg", "date": "2026-09-30", "timestamp": 1790792479.9280508}, {"path": "toto/WhatsApp Image 2026-09-30 at 14.06.47.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.47.jpeg", "date": "2026-09-30", "timestamp": 1790792479.926051}, {"path": "image_49e53415.jpg", "filename": "image_49e53415.jpg", "date": "2026-09-30", "timestamp": 1790788541.9245007}, {"path": "image_2cb4cac.jpg", "filename": "image_2cb4cac.jpg", "date": "2026-09-30", "timestamp": 1790788496.897199}, {"path": "image_17c2c6ec.jpg", "filename": "image_17c2c6ec.jpg", "date": "2026-09-30", "timestamp": 1790788460.9378726}, {"path": "image_8d946220.jpg", "filename": "image_8d946220.jpg", "date": "2026-09-30", "timestamp": 1790788445.1729538}, {"path": "image_eba79db9.jpg", "filename": "image_eba79db9.jpg", "date": "2026-09-30", "timestamp": 1790783828.722886}, {"path": "WhatsApp Image 2026-09-30 at 11.31.092.jpeg", "filename": "WhatsApp Image 2026-09-30 at 11.31.092.jpeg", "date": "2026-09-30", "timestamp": 1790782356.963105}, {"path": "WhatsApp Image 2026-09-30 at 11.31.09.jpeg", "filename": "WhatsApp Image 2026-09-30 at 11.31.09.jpeg", "date": "2026-09-30", "timestamp": 1790782347.3988407}, {"path": "https_www_instagram_com_artehouse3d_.png", "filename": "https_www_instagram_com_artehouse3d_.png", "date": "2026-09-30", "timestamp": 1790780889.4516256}, {"path": "image_cdfb5a63.jpg", "filename": "image_cdfb5a63.jpg", "date": "2026-09-30", "timestamp": 1790778327.6288908}, {"path": "image_9ad8d417.jpg", "filename": "image_9ad8d417.jpg", "date": "2026-09-30", "timestamp": 1790778317.2329733}, {"path": "image_6c913577.jpg", "filename": "image_6c913577.jpg", "date": "2026-09-30", "timestamp": 1790778305.0400908}, {"path": "image_6a9e9fb5.jpg", "filename": "image_6a9e9fb5.jpg", "date": "2026-09-30", "timestamp": 1790778290.8562238}, {"path": "image_507079f6.jpg", "filename": "image_507079f6.jpg", "date": "2026-09-30", "timestamp": 1790777740.7171798}, {"path": "bulba/WhatsApp Image 2026-09-30 at 10.04.58 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.58 (2).jpeg", "date": "2026-09-30", "timestamp": 1790777694.5871184}, {"path": "bulba/WhatsApp Image 2026-09-30 at 10.04.58 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.58 (1).jpeg", "date": "2026-09-30", "timestamp": 1790777694.5861175}, {"path": "bulba/WhatsApp Image 2026-09-30 at 10.04.58.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.58.jpeg", "date": "2026-09-30", "timestamp": 1790777694.5851164}, {"path": "jolteon/WhatsApp Image 2026-09-30 at 10.04.51.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.51.jpeg", "date": "2026-09-30", "timestamp": 1790777658.7151735}, {"path": "jolteon/WhatsApp Image 2026-09-30 at 10.04.50 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.50 (2).jpeg", "date": "2026-09-30", "timestamp": 1790777658.7141728}, {"path": "jolteon/WhatsApp Image 2026-09-30 at 10.04.50 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.50 (1).jpeg", "date": "2026-09-30", "timestamp": 1790777658.7121723}, {"path": "jolteon/WhatsApp Image 2026-09-30 at 10.04.50.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.50.jpeg", "date": "2026-09-30", "timestamp": 1790777658.7111733}, {"path": "image_23c0558e.jpg", "filename": "image_23c0558e.jpg", "date": "2026-09-30", "timestamp": 1790777591.5115614}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.45 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.45 (2).jpeg", "date": "2026-09-30", "timestamp": 1790777447.2651024}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.45 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.45 (1).jpeg", "date": "2026-09-30", "timestamp": 1790777447.2631025}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.45.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.45.jpeg", "date": "2026-09-30", "timestamp": 1790777447.2621055}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.44 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.44 (1).jpeg", "date": "2026-09-30", "timestamp": 1790777447.260103}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.44.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.44.jpeg", "date": "2026-09-30", "timestamp": 1790777447.2591019}];
+        let uploadedImages = JSON.parse(localStorage.getItem('artehouse_uploaded')) || [];
+        let imagePool = [...uploadedImages, ...diskImages];
+
+        let catalogData = JSON.parse(localStorage.getItem('artehouse_catalog')) || [
+            { id: "PK-01", name: "Bulbasaur Vaso / Cachepô", category: "pokemon", path: "bulba/WhatsApp Image 2026-09-30 at 10.04.58.jpeg" },
+            { id: "PK-02", name: "Gengar 3D", category: "pokemon", path: "gengar/WhatsApp Image 2026-09-30 at 10.04.44.jpeg" },
+            { id: "PK-03", name: "Jolteon Eeveelution", category: "pokemon", path: "jolteon/WhatsApp Image 2026-09-30 at 10.04.50.jpeg" },
+            { id: "AR-01", name: "Asas Articuladas", category: "articulados", path: "ala/WhatsApp Image 2026-09-30 at 14.06.30.jpeg" }
+        ];
+
+        let categories = JSON.parse(localStorage.getItem('artehouse_cats')) || {
+            "pokemon": "Pokémon & Geeks",
+            "articulados": "Articulados & Asas",
+            "diversos": "Vitrine & Outros Produtos"
+        };
+
+        let selectedPaths = new Set();
+
+        function init() {
+            renderCategoriesUI();
+            renderImagePool();
+            renderProductsList();
+        }
+
+        function resetLocalStorage() {
+            if(confirm("Deseja limpar os dados salvos e restaurar o catálogo padrão?")) {
+                localStorage.removeItem('artehouse_catalog');
+                localStorage.removeItem('artehouse_cats');
+                localStorage.removeItem('artehouse_uploaded');
+                location.reload();
+            }
+        }
+
+        function renderCategoriesUI() {
+            const batchCat = document.getElementById('batch-cat');
+            const prodCat = document.getElementById('prod-cat');
+            const filterCat = document.getElementById('filter-prod-cat');
+            const catListContainer = document.getElementById('cat-list-container');
+            
+            batchCat.innerHTML = '';
+            prodCat.innerHTML = '';
+            
+            const currentFilterVal = filterCat.value;
+            filterCat.innerHTML = '<option value="all">Todas as Categorias</option>';
+            catListContainer.innerHTML = '';
+
+            for(const [key, val] of Object.entries(categories)) {
+                batchCat.innerHTML += `<option value="${key}">${val}</option>`;
+                prodCat.innerHTML += `<option value="${key}">${val}</option>`;
+                filterCat.innerHTML += `<option value="${key}">${val}</option>`;
+                
+                catListContainer.innerHTML += `
+                    <div class="cat-row">
+                        <span><b>${val}</b> <small style="color:var(--text-muted);">(${key})</small></span>
+                        <button class="action-btn delete" onclick="deleteCategory('${key}')" title="Excluir Categoria">🗑️</button>
+                    </div>
+                `;
+            }
+            filterCat.value = currentFilterVal;
+        }
+
+        function deleteCategory(key) {
+            if(Object.keys(categories).length <= 1) {
+                alert("Você precisa manter pelo menos uma categoria.");
+                return;
+            }
+            if(confirm(`Deseja realmente excluir a categoria "${categories[key]}"?`)) {
+                delete categories[key];
+                localStorage.setItem('artehouse_cats', JSON.stringify(categories));
+                renderCategoriesUI();
+                renderProductsList();
+                alert("Categoria excluída com sucesso!");
+            }
+        }
+
+        function handleFileUpload(e) {
+            const files = e.target.files;
+            if(!files.length) return;
+
+            const today = new Date().toISOString().split('T')[0];
+            let processed = 0;
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const newImg = {
+                        path: event.target.result,
+                        filename: file.name,
+                        date: today,
+                        timestamp: Date.now()
+                    };
+                    uploadedImages.unshift(newImg);
+                    imagePool.unshift(newImg);
+                    processed++;
+                    if(processed === files.length) {
+                        localStorage.setItem('artehouse_uploaded', JSON.stringify(uploadedImages));
+                        renderImagePool();
+                        alert(`${files.length} foto(s) enviada(s) com sucesso para a pool!`);
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function renderImagePool() {
+            const poolContainer = document.getElementById('image-pool');
+            poolContainer.innerHTML = '';
+
+            const grouped = {};
+            imagePool.forEach(img => {
+                if(!grouped[img.date]) grouped[img.date] = [];
+                grouped[img.date].push(img);
+            });
+
+            for(const [date, imgs] of Object.entries(grouped)) {
+                let sectionHTML = `
+                    <div>
+                        <div class="date-group-title">📅 Data: ${date} (${imgs.length} fotos)</div>
+                        <div class="pool-grid">
+                `;
+                imgs.forEach(img => {
+                    const isChecked = selectedPaths.has(img.path) ? 'checked' : '';
+                    const isSelectedClass = selectedPaths.has(img.path) ? 'selected' : '';
+                    sectionHTML += `
+                        <div class="pool-item ${isSelectedClass}">
+                            <input type="checkbox" class="pool-checkbox" ${isChecked} onchange="toggleSelect('${img.path.replace(/'/g, "\'")}')">
+                            <img src="${img.path}" alt="${img.filename}" loading="lazy" title="${img.filename}" onclick="selectForForm('${img.path.replace(/'/g, "\'")}', '${img.filename.replace(/'/g, "\'")}')">
+                            <div class="pool-item-name" title="${img.filename}">${img.filename}</div>
+                        </div>
+                    `;
+                });
+                sectionHTML += `</div></div>`;
+                poolContainer.innerHTML += sectionHTML;
+            }
+            document.getElementById('selected-count').innerText = selectedPaths.size;
+        }
+
+        function selectForForm(path, filename) {
+            document.getElementById('prod-path').value = path;
+            document.getElementById('prod-id').value = "CH-01";
+            document.getElementById('prod-name').value = "Chaveiro 3D";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleSelect(path) {
+            if(selectedPaths.has(path)) {
+                selectedPaths.delete(path);
+            } else {
+                selectedPaths.add(path);
+            }
+            renderImagePool();
+        }
+
+        function selectAllPool(select) {
+            if(select) {
+                imagePool.forEach(img => selectedPaths.add(img.path));
+            } else {
+                selectedPaths.clear();
+            }
+            renderImagePool();
+        }
+
+        function addSelectedInBatch() {
+            if(selectedPaths.size === 0) {
+                alert('Nenhuma foto marcada na pool.');
+                return;
+            }
+            const catKey = document.getElementById('batch-cat').value;
+            const baseId = document.getElementById('batch-id').value.trim() || "CH-01";
+            const baseName = document.getElementById('batch-name').value.trim() || "Chaveiro 3D";
+            
+            let prefix = baseId;
+            let num = 1;
+            const match = baseId.match(/^(.*?)(\d+)$/);
+            if(match) {
+                prefix = match[1];
+                num = parseInt(match[2], 10);
+            }
+
+            let addedCount = 0;
+            selectedPaths.forEach(path => {
+                const currentId = match ? `${prefix}${String(num++).padStart(2, '0')}` : `${baseId}-${addedCount+1}`;
+                catalogData.push({
+                    id: currentId,
+                    name: baseName,
+                    category: catKey,
+                    path: path
+                });
+                addedCount++;
+            });
+
+            selectedPaths.clear();
+            renderProductsList();
+            renderImagePool();
+            alert(`${addedCount} produtos adicionados em lote com sucesso!`);
+        }
+
+        function saveProduct(e) {
+            e.preventDefault();
+            const editIndex = document.getElementById('edit-index').value;
+            const id = document.getElementById('prod-id').value.trim();
+            const name = document.getElementById('prod-name').value.trim();
+            const category = document.getElementById('prod-cat').value;
+            const path = document.getElementById('prod-path').value;
+
+            if(!path) {
+                alert('Por favor, selecione uma foto da pool de imagens ao lado.');
+                return;
+            }
+
+            if(editIndex === "") {
+                catalogData.push({ id, name, category, path });
+            } else {
+                catalogData[editIndex] = { id, name, category, path };
+            }
+
+            resetForm();
+            renderProductsList();
+            alert("Produto salvo com sucesso!");
+        }
+
+        function editProduct(globalIndex) {
+            const prod = catalogData[globalIndex];
+            document.getElementById('edit-index').value = globalIndex;
+            document.getElementById('prod-id').value = prod.id || '';
+            document.getElementById('prod-name').value = prod.name;
+            document.getElementById('prod-cat').value = prod.category;
+            document.getElementById('prod-path').value = prod.path;
+            document.getElementById('form-heading').innerText = "Editar Produto";
+            document.getElementById('cancel-btn').style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetForm() {
+            document.getElementById('product-form').reset();
+            document.getElementById('edit-index').value = "";
+            document.getElementById('form-heading').innerText = "Adicionar / Editar Produto";
+            document.getElementById('cancel-btn').style.display = "none";
+        }
+
+        function renderProductsList() {
+            const list = document.getElementById('products-list');
+            const filterCatVal = document.getElementById('filter-prod-cat').value;
+            document.getElementById('total-count').innerText = catalogData.length;
+            list.innerHTML = '';
+            
+            let displayedItems = catalogData.map((prod, idx) => ({ ...prod, globalIndex: idx }));
+            if(filterCatVal !== 'all') {
+                displayedItems = displayedItems.filter(item => item.category === filterCatVal);
+            }
+
+            if(displayedItems.length === 0) {
+                list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 1rem;">Nenhum produto encontrado nesta categoria.</p>';
+                return;
+            }
+
+            displayedItems.forEach((prod, displayIndex) => {
+                const catName = categories[prod.category] || '<span style="color: var(--danger)">Categoria Removida</span>';
+                const gIdx = prod.globalIndex;
+                list.innerHTML += `
+                    <div class="item-row">
+                        <img src="${prod.path}" class="item-thumb" onerror="this.src='https://via.placeholder.com/50?text=3D'">
+                        <div class="item-info">
+                            <div class="item-title">[${prod.id || 'SEM-ID'}] ${prod.name}</div>
+                            <div class="item-cat">${catName}</div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="action-btn" onclick="moveProduct(${gIdx}, -1)" title="Subir">⬆️</button>
+                            <button class="action-btn" onclick="moveProduct(${gIdx}, 1)" title="Descer">⬇️</button>
+                            <button class="action-btn" onclick="editProduct(${gIdx})" title="Editar">✏️</button>
+                            <button class="action-btn delete" onclick="deleteProduct(${gIdx})" title="Excluir">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+            localStorage.setItem('artehouse_catalog', JSON.stringify(catalogData));
+        }
+
+        function moveProduct(index, direction) {
+            const newIndex = index + direction;
+            if (newIndex < 0 || newIndex >= catalogData.length) return;
+            const temp = catalogData[index];
+            catalogData[index] = catalogData[newIndex];
+            catalogData[newIndex] = temp;
+            renderProductsList();
+        }
+
+        function deleteProduct(index) {
+            if(confirm("Deseja remover este produto do catálogo?")) {
+                catalogData.splice(index, 1);
+                renderProductsList();
+            }
+        }
+
+        function addCategory(e) {
+            e.preventDefault();
+            const id = document.getElementById('cat-id').value.trim().toLowerCase().replace(/\s+/g, '-');
+            const title = document.getElementById('cat-title').value.trim();
+            if(id && title) {
+                categories[id] = title;
+                localStorage.setItem('artehouse_cats', JSON.stringify(categories));
+                renderCategoriesUI();
+                renderProductsList();
+                alert(`Categoria "${title}" criada com sucesso!`);
+                document.getElementById('cat-id').value = '';
+                document.getElementById('cat-title').value = '';
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
