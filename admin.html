@@ -7,16 +7,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-card: #1e293b;
-            --accent: #38bdf8;
-            --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
+            --bg-primary: #FAF8F5;
+            --bg-secondary: #F2EEE9;
+            --bg-card: #FFFFFF;
+            --accent: #D9A3B1;
+            --accent-gradient: linear-gradient(135deg, #D9A3B1 0%, #BF9FA7 100%);
             --danger: #ef4444;
             --success: #22c55e;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
+            --text-main: #3F403C;
+            --text-muted: #7A7872;
+            --border: #E6E1DA;
             --radius: 12px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -40,6 +40,8 @@
             background: var(--bg-secondary);
             border-radius: var(--radius);
             border: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
         h1 {
             font-size: 1.8rem;
@@ -50,7 +52,7 @@
         }
         .btn {
             background: var(--accent);
-            color: var(--bg-primary);
+            color: #fff;
             border: none;
             padding: 0.6rem 1.2rem;
             border-radius: 8px;
@@ -99,7 +101,7 @@
         input, select, textarea {
             width: 100%;
             padding: 0.75rem;
-            background: var(--bg-primary);
+            background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 8px;
             color: var(--text-main);
@@ -122,7 +124,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--bg-primary);
+            background: var(--bg-card);
             padding: 0.5rem 0.75rem;
             border-radius: 6px;
             border: 1px solid var(--border);
@@ -149,7 +151,7 @@
             gap: 0.75rem;
         }
         .pool-item {
-            background: var(--bg-primary);
+            background: var(--bg-card);
             border: 2px solid var(--border);
             border-radius: 8px;
             overflow: hidden;
@@ -196,7 +198,7 @@
             display: flex;
             align-items: center;
             gap: 1rem;
-            background: var(--bg-primary);
+            background: var(--bg-card);
             padding: 0.75rem;
             border-radius: 8px;
             border: 1px solid var(--border);
@@ -231,7 +233,7 @@
             font-size: 0.85rem;
             padding: 0.3rem 0.5rem;
             border-radius: 4px;
-            background: var(--bg-secondary);
+            background: var(--bg-primary);
             border: 1px solid var(--border);
         }
         .action-btn:hover { color: var(--accent); background: var(--border); }
@@ -243,26 +245,24 @@
         <header>
             <div>
                 <h1>Painel ADM & Pool de Imagens</h1>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Gerencie IDs, ordens, categorias e lotes para o catálogo</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Gerencie IDs, ordens, categorias e publique atualizações</p>
             </div>
-            <div>
-                <a href="catalogo.html" target="_blank" class="btn btn-success">Ver Catálogo Público ↗</a>
-                <button onclick="exportPublicCatalogFile()" class="btn" style="background: #10b981; margin-left: 0.5rem;" title="Baixar catalogo.html atualizado para subir na Vercel">📥 Baixar catalogo.html</button>
-                <button onclick="resetLocalStorage()" class="btn btn-danger" style="margin-left: 0.5rem;" title="Restaurar padrão">Limpar Cache</button>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button onclick="exportPublicCatalogFile()" class="btn btn-success" title="Baixa o catalogo.html atualizado para subir na Vercel">📥 Baixar catalogo.html</button>
+                <a href="catalogo.html" target="_blank" class="btn" style="background: var(--text-main); color: #fff;">Ver Catálogo ↗</a>
+                <button onclick="resetLocalStorage()" class="btn btn-danger" title="Restaurar padrão">Limpar Cache</button>
             </div>
         </header>
 
         <div class="layout">
-            <!-- Esquerda: Ações e Formulário -->
             <div>
-                <!-- 1. Adicionar / Editar Produto -->
                 <div class="panel">
                     <h2 id="form-heading">Adicionar / Editar Produto</h2>
                     <form id="product-form" onsubmit="saveProduct(event)">
                         <input type="hidden" id="edit-index" value="">
                         <div class="form-group">
                             <label>Foto Selecionada</label>
-                            <input type="text" id="prod-path" required placeholder="Clique em uma foto na pool ao lado" readonly style="background: #111; color: var(--accent);">
+                            <input type="text" id="prod-path" required placeholder="Clique em uma foto na pool ao lado" readonly style="background: var(--bg-primary); color: var(--accent);">
                         </div>
                         <div class="form-group">
                             <label>ID / Código de Identificação (ex: CH-01)</label>
@@ -274,19 +274,15 @@
                         </div>
                         <div class="form-group">
                             <label>Categoria</label>
-                            <select id="prod-cat" required>
-                                <!-- Preenchido via JS -->
-                            </select>
+                            <select id="prod-cat" required></select>
                         </div>
                         <button type="submit" class="btn" style="width: 100%;">Salvar Produto no Catálogo</button>
                         <button type="button" id="cancel-btn" class="btn btn-danger" style="width: 100%; margin-top: 0.5rem; display: none;" onclick="resetForm()">Cancelar Edição</button>
                     </form>
                 </div>
 
-                <!-- 2. Adicionar em Lote -->
                 <div class="panel">
                     <h2>⚡ Adicionar Selecionadas em Lote</h2>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Marque várias fotos na pool para criá-las em lote com um ID base.</p>
                     <div class="form-group">
                         <label>ID Base (ex: CH-01)</label>
                         <input type="text" id="batch-id" placeholder="Ex: CH-01" required value="CH-01">
@@ -297,14 +293,11 @@
                     </div>
                     <div class="form-group">
                         <label>Categoria de Destino</label>
-                        <select id="batch-cat">
-                            <!-- Preenchido via JS -->
-                        </select>
+                        <select id="batch-cat"></select>
                     </div>
                     <button type="button" class="btn btn-success" style="width: 100%;" onclick="addSelectedInBatch()">Adicionar Marcadas (<span id="selected-count">0</span>)</button>
                 </div>
 
-                <!-- 3. Gerenciar Categorias -->
                 <div class="panel">
                     <h2>🏷️ Gerenciar Categorias</h2>
                     <div class="cat-list" id="cat-list-container"></div>
@@ -321,7 +314,6 @@
                     </form>
                 </div>
 
-                <!-- 4. Upload de Fotos -->
                 <div class="panel">
                     <h2>📥 Enviar Novas Fotos</h2>
                     <div class="form-group">
@@ -331,9 +323,7 @@
                 </div>
             </div>
 
-            <!-- Direita: Lista de Produtos & Pool de Imagens -->
             <div>
-                <!-- Produtos Cadastrados com Filtro por Categoria e Ordenação -->
                 <div class="panel">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
                         <h2 style="margin: 0; border: none; padding: 0;">📦 Produtos Cadastrados (<span id="total-count">0</span>)</h2>
@@ -347,16 +337,14 @@
                     <div class="items-list" id="products-list"></div>
                 </div>
 
-                <!-- Pool de Imagens -->
                 <div class="panel">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                         <h2 style="margin: 0; border: none; padding: 0;">Pool de Imagens (Por Data)</h2>
                         <div>
-                            <button class="btn btn-sm" onclick="selectAllPool(true)" style="background: var(--border); color: white;">Marcar Todas</button>
-                            <button class="btn btn-sm" onclick="selectAllPool(false)" style="background: var(--border); color: white; margin-left: 0.3rem;">Desmarcar</button>
+                            <button class="btn btn-sm" onclick="selectAllPool(true)" style="background: var(--text-main); color: white;">Marcar Todas</button>
+                            <button class="btn btn-sm" onclick="selectAllPool(false)" style="background: var(--text-main); color: white; margin-left: 0.3rem;">Desmarcar</button>
                         </div>
                     </div>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Clique em uma foto para preencher o formulário ou marque para lote.</p>
                     <div class="pool-container" id="image-pool"></div>
                 </div>
             </div>
@@ -364,10 +352,7 @@
     </div>
 
     <script>
-        let diskImages = [{"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.10 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.10 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1303678}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.10 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.10 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1283658}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.10.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.10.jpeg", "date": "2026-10-21", "timestamp": 1792587469.1263688}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.09 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.09 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1253679}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.09 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.09 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.12337}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.09.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.09.jpeg", "date": "2026-10-21", "timestamp": 1792587469.121367}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.08 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.08 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1203713}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.08 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.08 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.118367}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.08.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.08.jpeg", "date": "2026-10-21", "timestamp": 1792587469.1173682}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.07 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.07 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1153662}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.07 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.07 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1143696}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.07.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.07.jpeg", "date": "2026-10-21", "timestamp": 1792587469.1123664}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.06 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.06 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.111366}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.06 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.06 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1093664}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.06.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.06.jpeg", "date": "2026-10-21", "timestamp": 1792587469.108366}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.05 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.05 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1063678}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.05 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.05 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1053658}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.05.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.05.jpeg", "date": "2026-10-21", "timestamp": 1792587469.1033685}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.04 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.04 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.102369}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.04 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.04 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1013675}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.04.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.04.jpeg", "date": "2026-10-21", "timestamp": 1792587469.099367}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.03 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.03 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.097366}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.03 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.03 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0963702}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.03.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.03.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0953662}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.02 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.02 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0933664}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.02 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.02 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0923657}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.02.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.02.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0903685}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.01 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.01 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0893655}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.01.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.01.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0873659}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.53.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.53.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0863662}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.51 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.51 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0843675}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.51.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.51.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0823681}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.50 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.50 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.081368}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.50.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.50.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0793674}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.49 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.49 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0783675}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.49.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.49.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0763657}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.48.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.48.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0753655}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.47 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.47 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.073366}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.47.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.47.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0723655}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.46 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.46 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0713658}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.46.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.46.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0693667}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.45 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.45 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0683656}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.45.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.45.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0663662}, {"path": "image_cf03c98f.jpg", "filename": "image_cf03c98f.jpg", "date": "2026-09-30", "timestamp": 1790793532.5169308}, {"path": "toto/WhatsApp Image 2026-09-30 at 14.34.48.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.34.48.jpeg", "date": "2026-09-30", "timestamp": 1790793346.971881}, {"path": "image_3d7a585c.jpg", "filename": "image_3d7a585c.jpg", "date": "2026-09-30", "timestamp": 1790792799.3646607}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.32 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.32 (1).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6415715}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.32.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.32.jpeg", "date": "2026-09-30", "timestamp": 1790792628.640585}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.31 (3).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.31 (3).jpeg", "date": "2026-09-30", "timestamp": 1790792628.639574}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.31 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.31 (2).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6375716}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.31 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.31 (1).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6365705}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.31.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.31.jpeg", "date": "2026-09-30", "timestamp": 1790792628.634571}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.30 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.30 (2).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6335657}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.30 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.30 (1).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6320617}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.30.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.30.jpeg", "date": "2026-09-30", "timestamp": 1790792628.630062}, {"path": "image_15fc3d72.jpg", "filename": "image_15fc3d72.jpg", "date": "2026-09-30", "timestamp": 1790792602.989645}, {"path": "toto/WhatsApp Image 2026-09-30 at 14.06.47 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.47 (2).jpeg", "date": "2026-09-30", "timestamp": 1790792479.9290528}, {"path": "toto/WhatsApp Image 2026-09-30 at 14.06.47 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.47 (1).jpeg", "date": "2026-09-30", "timestamp": 1790792479.9280508}, {"path": "toto/WhatsApp Image 2026-09-30 at 14.06.47.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.47.jpeg", "date": "2026-09-30", "timestamp": 1790792479.926051}, {"path": "image_49e53415.jpg", "filename": "image_49e53415.jpg", "date": "2026-09-30", "timestamp": 1790788541.9245007}, {"path": "image_2cb4cac.jpg", "filename": "image_2cb4cac.jpg", "date": "2026-09-30", "timestamp": 1790788496.897199}, {"path": "image_17c2c6ec.jpg", "filename": "image_17c2c6ec.jpg", "date": "2026-09-30", "timestamp": 1790788460.9378726}, {"path": "image_8d946220.jpg", "filename": "image_8d946220.jpg", "date": "2026-09-30", "timestamp": 1790788445.1729538}, {"path": "image_eba79db9.jpg", "filename": "image_eba79db9.jpg", "date": "2026-09-30", "timestamp": 1790783828.722886}, {"path": "WhatsApp Image 2026-09-30 at 11.31.092.jpeg", "filename": "WhatsApp Image 2026-09-30 at 11.31.092.jpeg", "date": "2026-09-30", "timestamp": 1790782356.963105}, {"path": "WhatsApp Image 2026-09-30 at 11.31.09.jpeg", "filename": "WhatsApp Image 2026-09-30 at 11.31.09.jpeg", "date": "2026-09-30", "timestamp": 1790782347.3988407}, {"path": "https_www_instagram_com_artehouse3d_.png", "filename": "https_www_instagram_com_artehouse3d_.png", "date": "2026-09-30", "timestamp": 1790780889.4516256}, {"path": "image_cdfb5a63.jpg", "filename": "image_cdfb5a63.jpg", "date": "2026-09-30", "timestamp": 1790778327.6288908}, {"path": "image_9ad8d417.jpg", "filename": "image_9ad8d417.jpg", "date": "2026-09-30", "timestamp": 1790778317.2329733}, {"path": "image_6c913577.jpg", "filename": "image_6c913577.jpg", "date": "2026-09-30", "timestamp": 1790778305.0400908}, {"path": "image_6a9e9fb5.jpg", "filename": "image_6a9e9fb5.jpg", "date": "2026-09-30", "timestamp": 1790778290.8562238}, {"path": "image_507079f6.jpg", "filename": "image_507079f6.jpg", "date": "2026-09-30", "timestamp": 1790777740.7171798}, {"path": "bulba/WhatsApp Image 2026-09-30 at 10.04.58 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.58 (2).jpeg", "date": "2026-09-30", "timestamp": 1790777694.5871184}, {"path": "bulba/WhatsApp Image 2026-09-30 at 10.04.58 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.58 (1).jpeg", "date": "2026-09-30", "timestamp": 1790777694.5861175}, {"path": "bulba/WhatsApp Image 2026-09-30 at 10.04.58.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.58.jpeg", "date": "2026-09-30", "timestamp": 1790777694.5851164}, {"path": "jolteon/WhatsApp Image 2026-09-30 at 10.04.51.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.51.jpeg", "date": "2026-09-30", "timestamp": 1790777658.7151735}, {"path": "jolteon/WhatsApp Image 2026-09-30 at 10.04.50 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.50 (2).jpeg", "date": "2026-09-30", "timestamp": 1790777658.7141728}, {"path": "jolteon/WhatsApp Image 2026-09-30 at 10.04.50 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.50 (1).jpeg", "date": "2026-09-30", "timestamp": 1790777658.7121723}, {"path": "jolteon/WhatsApp Image 2026-09-30 at 10.04.50.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.50.jpeg", "date": "2026-09-30", "timestamp": 1790777658.7111733}, {"path": "image_23c0558e.jpg", "filename": "image_23c0558e.jpg", "date": "2026-09-30", "timestamp": 1790777591.5115614}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.45 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.45 (2).jpeg", "date": "2026-09-30", "timestamp": 1790777447.2651024}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.45 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.45 (1).jpeg", "date": "2026-09-30", "timestamp": 1790777447.2631025}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.45.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.45.jpeg", "date": "2026-09-30", "timestamp": 1790777447.2621055}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.44 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.44 (1).jpeg", "date": "2026-09-30", "timestamp": 1790777447.260103}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.44.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.44.jpeg", "date": "2026-09-30", "timestamp": 1790777447.2591019}];
-        let uploadedImages = JSON.parse(localStorage.getItem('artehouse_uploaded')) || [];
-        let imagePool = [...uploadedImages, ...diskImages];
-
+        const imagePool = [{"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.54.00.jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.54.00.jpeg", "date": "2026-10-21", "timestamp": 1792592146.3760266}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.59 (4).jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.59 (4).jpeg", "date": "2026-10-21", "timestamp": 1792592146.375026}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.59 (3).jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.59 (3).jpeg", "date": "2026-10-21", "timestamp": 1792592146.374027}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.59 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.59 (2).jpeg", "date": "2026-10-21", "timestamp": 1792592146.372026}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.59 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.59 (1).jpeg", "date": "2026-10-21", "timestamp": 1792592146.3710265}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.59.jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.59.jpeg", "date": "2026-10-21", "timestamp": 1792592146.369028}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.58 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.58 (2).jpeg", "date": "2026-10-21", "timestamp": 1792592146.3680272}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.58 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.58 (1).jpeg", "date": "2026-10-21", "timestamp": 1792592146.3670278}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.58.jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.58.jpeg", "date": "2026-10-21", "timestamp": 1792592146.3630266}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.39.jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.39.jpeg", "date": "2026-10-21", "timestamp": 1792592146.3550274}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.37 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.37 (1).jpeg", "date": "2026-10-21", "timestamp": 1792592146.3540263}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 09.53.37.jpeg", "filename": "WhatsApp Image 2026-10-21 at 09.53.37.jpeg", "date": "2026-10-21", "timestamp": 1792592146.3520262}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.10 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.10 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1303678}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.10 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.10 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1283658}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.10.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.10.jpeg", "date": "2026-10-21", "timestamp": 1792587469.1263688}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.09 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.09 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1253679}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.09 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.09 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.12337}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.09.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.09.jpeg", "date": "2026-10-21", "timestamp": 1792587469.121367}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.08 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.08 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1203713}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.08 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.08 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.118367}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.08.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.08.jpeg", "date": "2026-10-21", "timestamp": 1792587469.1173682}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.07 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.07 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1153662}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.07 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.07 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1143696}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.07.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.07.jpeg", "date": "2026-10-21", "timestamp": 1792587469.1123664}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.06 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.06 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.111366}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.06 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.06 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1093664}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.06.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.06.jpeg", "date": "2026-10-21", "timestamp": 1792587469.108366}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.05 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.05 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1063678}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.05 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.05 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1053658}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.05.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.05.jpeg", "date": "2026-10-21", "timestamp": 1792587469.1033685}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.04 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.04 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.102369}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.04 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.04 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.1013675}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.04.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.04.jpeg", "date": "2026-10-21", "timestamp": 1792587469.099367}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.03 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.03 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.097366}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.03 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.03 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0963702}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.03.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.03.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0953662}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.02 (2).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.02 (2).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0933664}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.02 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.02 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0923657}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.02.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.02.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0903685}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.01 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.01 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0893655}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.56.01.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.56.01.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0873659}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.53.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.53.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0863662}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.51 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.51 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0843675}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.51.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.51.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0823681}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.50 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.50 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.081368}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.50.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.50.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0793674}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.49 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.49 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0783675}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.49.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.49.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0763657}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.48.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.48.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0753655}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.47 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.47 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.073366}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.47.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.47.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0723655}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.46 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.46 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0713658}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.46.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.46.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0693667}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.45 (1).jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.45 (1).jpeg", "date": "2026-10-21", "timestamp": 1792587469.0683656}, {"path": "fotos doversas/WhatsApp Image 2026-10-21 at 08.55.45.jpeg", "filename": "WhatsApp Image 2026-10-21 at 08.55.45.jpeg", "date": "2026-10-21", "timestamp": 1792587469.0663662}, {"path": "image_cf03c98f.jpg", "filename": "image_cf03c98f.jpg", "date": "2026-09-30", "timestamp": 1790793532.5169308}, {"path": "toto/WhatsApp Image 2026-09-30 at 14.34.48.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.34.48.jpeg", "date": "2026-09-30", "timestamp": 1790793346.971881}, {"path": "image_3d7a585c.jpg", "filename": "image_3d7a585c.jpg", "date": "2026-09-30", "timestamp": 1790792799.3646607}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.32 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.32 (1).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6415715}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.32.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.32.jpeg", "date": "2026-09-30", "timestamp": 1790792628.640585}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.31 (3).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.31 (3).jpeg", "date": "2026-09-30", "timestamp": 1790792628.639574}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.31 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.31 (2).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6375716}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.31 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.31 (1).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6365705}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.31.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.31.jpeg", "date": "2026-09-30", "timestamp": 1790792628.634571}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.30 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.30 (2).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6335657}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.30 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.30 (1).jpeg", "date": "2026-09-30", "timestamp": 1790792628.6320617}, {"path": "ala/WhatsApp Image 2026-09-30 at 14.06.30.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.30.jpeg", "date": "2026-09-30", "timestamp": 1790792628.630062}, {"path": "image_15fc3d72.jpg", "filename": "image_15fc3d72.jpg", "date": "2026-09-30", "timestamp": 1790792602.989645}, {"path": "toto/WhatsApp Image 2026-09-30 at 14.06.47 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.47 (2).jpeg", "date": "2026-09-30", "timestamp": 1790792479.9290528}, {"path": "toto/WhatsApp Image 2026-09-30 at 14.06.47 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.47 (1).jpeg", "date": "2026-09-30", "timestamp": 1790792479.9280508}, {"path": "toto/WhatsApp Image 2026-09-30 at 14.06.47.jpeg", "filename": "WhatsApp Image 2026-09-30 at 14.06.47.jpeg", "date": "2026-09-30", "timestamp": 1790792479.926051}, {"path": "image_49e53415.jpg", "filename": "image_49e53415.jpg", "date": "2026-09-30", "timestamp": 1790788541.9245007}, {"path": "image_2cb4cac.jpg", "filename": "image_2cb4cac.jpg", "date": "2026-09-30", "timestamp": 1790788496.897199}, {"path": "image_17c2c6ec.jpg", "filename": "image_17c2c6ec.jpg", "date": "2026-09-30", "timestamp": 1790788460.9378726}, {"path": "image_8d946220.jpg", "filename": "image_8d946220.jpg", "date": "2026-09-30", "timestamp": 1790788445.1729538}, {"path": "image_eba79db9.jpg", "filename": "image_eba79db9.jpg", "date": "2026-09-30", "timestamp": 1790783828.722886}, {"path": "WhatsApp Image 2026-09-30 at 11.31.092.jpeg", "filename": "WhatsApp Image 2026-09-30 at 11.31.092.jpeg", "date": "2026-09-30", "timestamp": 1790782356.963105}, {"path": "WhatsApp Image 2026-09-30 at 11.31.09.jpeg", "filename": "WhatsApp Image 2026-09-30 at 11.31.09.jpeg", "date": "2026-09-30", "timestamp": 1790782347.3988407}, {"path": "https_www_instagram_com_artehouse3d_.png", "filename": "https_www_instagram_com_artehouse3d_.png", "date": "2026-09-30", "timestamp": 1790780889.4516256}, {"path": "image_cdfb5a63.jpg", "filename": "image_cdfb5a63.jpg", "date": "2026-09-30", "timestamp": 1790778327.6288908}, {"path": "image_9ad8d417.jpg", "filename": "image_9ad8d417.jpg", "date": "2026-09-30", "timestamp": 1790778317.2329733}, {"path": "image_6c913577.jpg", "filename": "image_6c913577.jpg", "date": "2026-09-30", "timestamp": 1790778305.0400908}, {"path": "image_6a9e9fb5.jpg", "filename": "image_6a9e9fb5.jpg", "date": "2026-09-30", "timestamp": 1790778290.8562238}, {"path": "image_507079f6.jpg", "filename": "image_507079f6.jpg", "date": "2026-09-30", "timestamp": 1790777740.7171798}, {"path": "bulba/WhatsApp Image 2026-09-30 at 10.04.58 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.58 (2).jpeg", "date": "2026-09-30", "timestamp": 1790777694.5871184}, {"path": "bulba/WhatsApp Image 2026-09-30 at 10.04.58 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.58 (1).jpeg", "date": "2026-09-30", "timestamp": 1790777694.5861175}, {"path": "bulba/WhatsApp Image 2026-09-30 at 10.04.58.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.58.jpeg", "date": "2026-09-30", "timestamp": 1790777694.5851164}, {"path": "jolteon/WhatsApp Image 2026-09-30 at 10.04.51.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.51.jpeg", "date": "2026-09-30", "timestamp": 1790777658.7151735}, {"path": "jolteon/WhatsApp Image 2026-09-30 at 10.04.50 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.50 (2).jpeg", "date": "2026-09-30", "timestamp": 1790777658.7141728}, {"path": "jolteon/WhatsApp Image 2026-09-30 at 10.04.50 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.50 (1).jpeg", "date": "2026-09-30", "timestamp": 1790777658.7121723}, {"path": "jolteon/WhatsApp Image 2026-09-30 at 10.04.50.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.50.jpeg", "date": "2026-09-30", "timestamp": 1790777658.7111733}, {"path": "image_23c0558e.jpg", "filename": "image_23c0558e.jpg", "date": "2026-09-30", "timestamp": 1790777591.5115614}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.45 (2).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.45 (2).jpeg", "date": "2026-09-30", "timestamp": 1790777447.2651024}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.45 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.45 (1).jpeg", "date": "2026-09-30", "timestamp": 1790777447.2631025}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.45.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.45.jpeg", "date": "2026-09-30", "timestamp": 1790777447.2621055}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.44 (1).jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.44 (1).jpeg", "date": "2026-09-30", "timestamp": 1790777447.260103}, {"path": "gengar/WhatsApp Image 2026-09-30 at 10.04.44.jpeg", "filename": "WhatsApp Image 2026-09-30 at 10.04.44.jpeg", "date": "2026-09-30", "timestamp": 1790777447.2591019}];
         let catalogData = JSON.parse(localStorage.getItem('artehouse_catalog')) || [
             { id: "PK-01", name: "Bulbasaur Vaso / Cachepô", category: "pokemon", path: "bulba/WhatsApp Image 2026-09-30 at 10.04.58.jpeg" },
             { id: "PK-02", name: "Gengar 3D", category: "pokemon", path: "gengar/WhatsApp Image 2026-09-30 at 10.04.44.jpeg" },
@@ -402,339 +387,113 @@
             const currentCatalogJSON = JSON.stringify(catalogData, null, 4);
             const currentCatsJSON = JSON.stringify(categories, null, 4);
 
-            const fileContent = `<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Amostras - Arte House 3D</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-primary: #FAF8F5;
-            --bg-secondary: #F2EEE9;
-            --bg-card: #FFFFFF;
-            --accent: #D9A3B1;
-            --accent-gradient: linear-gradient(135deg, #D9A3B1 0%, #BF9FA7 100%);
-            --text-main: #3F403C;
-            --text-muted: #7A7872;
-            --border: #E6E1DA;
-            --radius: 12px;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-main);
-            line-height: 1.6;
-            padding: 2rem 1rem;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem;
-            background: var(--bg-secondary);
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            position: relative;
-            overflow: hidden;
-        }
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 4px;
-            background: var(--accent-gradient);
-        }
-        .logo-container img {
-            max-height: 80px;
-            margin-bottom: 1rem;
-            border-radius: 8px;
-        }
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-        }
-        .social-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: #e1306c;
-            color: white;
-            padding: 0.6rem 1.2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: opacity 0.2s;
-        }
-        .social-link:hover { opacity: 0.9; }
-        
-        .filters {
-            display: flex;
-            justify-content: center;
-            gap: 0.75rem;
-            margin-bottom: 2.5rem;
-            flex-wrap: wrap;
-        }
-        .filter-btn {
-            background: var(--bg-secondary);
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-            padding: 0.6rem 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        .filter-btn.active, .filter-btn:hover {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-        }
-
-        .category-section {
-            margin-bottom: 4rem;
-        }
-        .category-header {
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 0.5rem;
-        }
-        .category-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-        .category-desc {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 1.5rem;
-        }
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-            transition: transform 0.2s, border-color 0.2s;
-            display: flex;
-            flex-direction: column;
-        }
-        .card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent);
-        }
-        .card-img-wrapper {
-            width: 100%;
-            height: 220px;
-            overflow: hidden;
-            background: #111;
-            cursor: pointer;
-            position: relative;
-        }
-        .card-img-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s;
-        }
-        .card-img-wrapper:hover img {
-            transform: scale(1.05);
-        }
-        .card-body {
-            padding: 1rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .card-title {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        .card-meta {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .card-badge {
-            display: inline-block;
-            background: rgba(217, 163, 177, 0.2);
-            color: #b07080;
-            font-size: 0.75rem;
-            padding: 0.2rem 0.6rem;
-            border-radius: 4px;
-            font-weight: 500;
-        }
-        .card-id-badge {
-            display: inline-block;
-            background: rgba(99, 102, 241, 0.15);
-            color: #6366f1;
-            font-size: 0.75rem;
-            padding: 0.2rem 0.6rem;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-
-        .lightbox {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-        }
-        .lightbox img {
-            max-width: 90%;
-            max-height: 85vh;
-            border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-        .lightbox-close {
-            position: absolute;
-            top: 20px; right: 30px;
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 4rem;
-            padding: 2rem;
-            color: var(--text-muted);
-            border-top: 1px solid var(--border);
-            font-size: 0.9rem;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <div class="logo-container">
-                <img src="logo.png" alt="Arte House 3D Logo" onerror="this.style.display='none'">
-            </div>
-            <h1>Arte House 3D</h1>
-            <p class="subtitle">Catálogo de Amostras & Produtos de Impressão 3D</p>
-            <a href="https://www.instagram.com/artehouse3d" target="_blank" class="social-link">
-                📸 Instagram @artehouse3d
-            </a>
-        </header>
-
-        <div class="filters" id="filters-container">
-            <button class="filter-btn active" onclick="filterCat('all')">Todos os Produtos</button>
-        </div>
-
-        <div id="catalog-content"></div>
-    </div>
-
-    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-        <button class="lightbox-close">&times;</button>
-        <img id="lightbox-img" src="" alt="Ampliada">
-    </div>
-
-    <script>
-        let catalogData = ${currentCatalogJSON};
-        let categories = ${currentCatsJSON};
-
-        let currentFilter = 'all';
-
-        function renderCatalog() {
-            const filtersContainer = document.getElementById('filters-container');
-            filtersContainer.innerHTML = `<button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" onclick="filterCat('all')">Todos os Produtos</button>`;
-            
-            for(const [catId, catTitle] of Object.entries(categories)) {
-                filtersContainer.innerHTML += `<button class="filter-btn ${currentFilter === catId ? 'active' : ''}" onclick="filterCat('${catId}')">${catTitle}</button>`;
-            }
-
-            const contentContainer = document.getElementById('catalog-content');
-            contentContainer.innerHTML = '';
-
-            for(const [catId, catTitle] of Object.entries(categories)) {
-                if(currentFilter !== 'all' && currentFilter !== catId) continue;
-
-                const items = catalogData.filter(item => item.category === catId);
-                if(items.length === 0 && currentFilter === 'all') continue;
-
-                let gridHTML = `
-                    <section class="category-section" data-category="${catId}">
-                        <div class="category-header">
-                            <h2 class="category-title">${catTitle}</h2>
-                            <p class="category-desc">Produtos e amostras da categoria ${catTitle}</p>
-                        </div>
-                        <div class="grid">
-                `;
-
-                if(items.length === 0) {
-                    gridHTML += `<p style="color: var(--text-muted); grid-column: 1/-1;">Nenhum produto cadastrado nesta categoria ainda.</p>`;
-                } else {
-                    items.forEach(item => {
-                        gridHTML += `
-                            <div class="card">
-                                <div class="card-img-wrapper" onclick="openLightbox('${item.path}')">
-                                    <img src="${item.path}" alt="${item.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/260x220?text=3D+Arte+House'">
-                                </div>
-                                <div class="card-body">
-                                    <div>
-                                        <div class="card-meta">
-                                            ${item.id ? `<span class="card-id-badge">${item.id}</span>` : ''}
-                                            <span class="card-badge">${catTitle}</span>
-                                        </div>
-                                        <h3 class="card-title" style="margin-top: 0.5rem;">${item.name}</h3>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
-
-                gridHTML += `</div></section>`;
-                contentContainer.innerHTML += gridHTML;
-            }
-        }
-
-        function filterCat(cat) {
-            currentFilter = cat;
-            renderCatalog();
-        }
-
-        function openLightbox(src) {
-            const lightbox = document.getElementById('lightbox');
-            const img = document.getElementById('lightbox-img');
-            img.src = src;
-            lightbox.style.display = 'flex';
-        }
-
-        function closeLightbox() {
-            document.getElementById('lightbox').style.display = 'none';
-        }
-
-        renderCatalog();
-    </script>
-</body>
-</html>`;
+            const fileContent = "<!DOCTYPE html>\n" +
+                "<html lang="pt-BR">\n" +
+                "<head>\n" +
+                "    <meta charset="UTF-8">\n" +
+                "    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n" +
+                "    <title>Catálogo de Amostras - Arte House 3D</title>\n" +
+                "    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">\n" +
+                "    <style>\n" +
+                "        :root {\n" +
+                "            --bg-primary: #FAF8F5;\n" +
+                "            --bg-secondary: #F2EEE9;\n" +
+                "            --bg-card: #FFFFFF;\n" +
+                "            --accent: #D9A3B1;\n" +
+                "            --accent-gradient: linear-gradient(135deg, #D9A3B1 0%, #BF9FA7 100%);\n" +
+                "            --text-main: #3F403C;\n" +
+                "            --text-muted: #7A7872;\n" +
+                "            --border: #E6E1DA;\n" +
+                "            --radius: 12px;\n" +
+                "        }\n" +
+                "        * { box-sizing: border-box; margin: 0; padding: 0; }\n" +
+                "        body { font-family: 'Inter', sans-serif; background-color: var(--bg-primary); color: var(--text-main); line-height: 1.6; padding: 2rem 1rem; }\n" +
+                "        .container { max-width: 1200px; margin: 0 auto; }\n" +
+                "        header { text-align: center; margin-bottom: 3rem; padding: 2rem; background: var(--bg-secondary); border-radius: var(--radius); border: 1px solid var(--border); position: relative; overflow: hidden; }\n" +
+                "        header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--accent-gradient); }\n" +
+                "        .logo-container img { max-height: 80px; margin-bottom: 1rem; border-radius: 8px; }\n" +
+                "        h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }\n" +
+                "        .subtitle { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem; }\n" +
+                "        .social-link { display: inline-flex; align-items: center; gap: 0.5rem; background: #e1306c; color: white; padding: 0.6rem 1.2rem; border-radius: 50px; text-decoration: none; font-weight: 500; transition: opacity 0.2s; }\n" +
+                "        .social-link:hover { opacity: 0.9; }\n" +
+                "        .filters { display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 2.5rem; flex-wrap: wrap; }\n" +
+                "        .filter-btn { background: var(--bg-secondary); color: var(--text-muted); border: 1px solid var(--border); padding: 0.6rem 1.2rem; border-radius: 50px; cursor: pointer; font-weight: 500; transition: all 0.2s; }\n" +
+                "        .filter-btn.active, .filter-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }\n" +
+                "        .category-section { margin-bottom: 4rem; }\n" +
+                "        .category-header { margin-bottom: 1.5rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; }\n" +
+                "        .category-title { font-size: 1.8rem; font-weight: 600; color: var(--text-main); }\n" +
+                "        .category-desc { color: var(--text-muted); font-size: 0.95rem; }\n" +
+                "        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }\n" +
+                "        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column; }\n" +
+                "        .card:hover { transform: translateY(-4px); border-color: var(--accent); }\n" +
+                "        .card-img-wrapper { width: 100%; height: 220px; overflow: hidden; background: #111; cursor: pointer; position: relative; }\n" +
+                "        .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }\n" +
+                "        .card-img-wrapper:hover img { transform: scale(1.05); }\n" +
+                "        .card-body { padding: 1rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }\n" +
+                "        .card-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }\n" +
+                "        .card-meta { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }\n" +
+                "        .card-badge { display: inline-block; background: rgba(217, 163, 177, 0.2); color: #b07080; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 500; }\n" +
+                "        .card-id-badge { display: inline-block; background: rgba(99, 102, 241, 0.15); color: #6366f1; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 600; }\n" +
+                "        .lightbox { display: none; position: fixed; z-index: 1000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 2rem; }\n" +
+                "        .lightbox img { max-width: 90%; max-height: 85vh; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }\n" +
+                "        .lightbox-close { position: absolute; top: 20px; right: 30px; color: white; font-size: 2rem; cursor: pointer; background: none; border: none; }\n" +
+                "        footer { text-align: center; margin-top: 4rem; padding: 2rem; color: var(--text-muted); border-top: 1px solid var(--border); font-size: 0.9rem; }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "    <div class="container">\n" +
+                "        <header>\n" +
+                "            <div class="logo-container">\n" +
+                "                <img src="logo.png" alt="Arte House 3D Logo" onerror="this.style.display='none'">\n" +
+                "            </div>\n" +
+                "            <h1>Arte House 3D</h1>\n" +
+                "            <p class="subtitle">Catálogo de Amostras & Produtos de Impressão 3D</p>\n" +
+                "            <a href="https://www.instagram.com/artehouse3d" target="_blank" class="social-link">📸 Instagram @artehouse3d</a>\n" +
+                "        </header>\n" +
+                "        <div class="filters" id="filters-container">\n" +
+                "            <button class="filter-btn active" onclick="filterCat('all')">Todos os Produtos</button>\n" +
+                "        </div>\n" +
+                "        <div id="catalog-content"></div>\n" +
+                "    </div>\n" +
+                "    <div class="lightbox" id="lightbox" onclick="closeLightbox()">\n" +
+                "        <button class="lightbox-close">&times;</button>\n" +
+                "        <img id="lightbox-img" src="" alt="Ampliada">\n" +
+                "    </div>\n" +
+                "    <script>\n" +
+                "        let catalogData = " + currentCatalogJSON + ";\n" +
+                "        let categories = " + currentCatsJSON + ";\n" +
+                "        let currentFilter = 'all';\n" +
+                "        function renderCatalog() {{\n" +
+                "            const fc = document.getElementById('filters-container');\n" +
+                "            fc.innerHTML = '<button class="filter-btn ' + (currentFilter === 'all' ? 'active' : '') + '" onclick="filterCat(\'all\')">Todos os Produtos</button>';\n" +
+                "            for(const [catId, catTitle] of Object.entries(categories)) {{\n" +
+                "                fc.innerHTML += '<button class="filter-btn ' + (currentFilter === catId ? 'active' : '') + '" onclick="filterCat(\'' + catId + '\')">' + catTitle + '</button>';\n" +
+                "            }}\n" +
+                "            const cc = document.getElementById('catalog-content');\n" +
+                "            cc.innerHTML = '';\n" +
+                "            for(const [catId, catTitle] of Object.entries(categories)) {{\n" +
+                "                if(currentFilter !== 'all' && currentFilter !== catId) continue;\n" +
+                "                const items = catalogData.filter(item => item.category === catId);\n" +
+                "                if(items.length === 0 && currentFilter === 'all') continue;\n" +
+                "                let gridHTML = '<section class="category-section" data-category="' + catId + '"><div class="category-header"><h2 class="category-title">' + catTitle + '</h2><p class="category-desc">Produtos e amostras da categoria ' + catTitle + '</p></div><div class="grid">';\n" +
+                "                if(items.length === 0) {{\n" +
+                "                    gridHTML += '<p style="color: var(--text-muted); grid-column: 1/-1;">Nenhum produto cadastrado nesta categoria ainda.</p>';\n" +
+                "                }} else {{\n" +
+                "                    items.forEach(item => {{\n" +
+                "                        gridHTML += '<div class="card"><div class="card-img-wrapper" onclick="openLightbox(\'' + item.path + '\')"><img src="' + item.path + '" alt="' + item.name + '" loading="lazy" onerror="this.src=\'https://via.placeholder.com/260x220?text=3D+Arte+House\'()"></div><div class="card-body"><div><div class="card-meta">' + (item.id ? '<span class="card-id-badge">' + item.id + '</span>' : '') + '<span class="card-badge">' + catTitle + '</span></div><h3 class="card-title" style="margin-top: 0.5rem;">' + item.name + '</h3></div></div></div>';\n" +
+                "                    }});\n" +
+                "                }}\n" +
+                "                gridHTML += '</div></section>';\n" +
+                "                cc.innerHTML += gridHTML;\n" +
+                "            }}\n" +
+                "        }}\n" +
+                "        function filterCat(cat) {{ currentFilter = cat; renderCatalog(); }}\n" +
+                "        function openLightbox(src) {{ document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').style.display = 'flex'; }}\n" +
+                "        function closeLightbox() {{ document.getElementById('lightbox').style.display = 'none'; }}\n" +
+                "        renderCatalog();\n" +
+                "    </script>\n" +
+                "</body>\n" +
+                "</html>";
 
             const blob = new Blob([fileContent], { type: 'text/html;charset=utf-8' });
             const url = URL.createObjectURL(blob);
@@ -761,16 +520,15 @@
             catListContainer.innerHTML = '';
 
             for(const [key, val] of Object.entries(categories)) {
-                batchCat.innerHTML += `<option value="${key}">${val}</option>`;
-                prodCat.innerHTML += `<option value="${key}">${val}</option>`;
-                filterCat.innerHTML += `<option value="${key}">${val}</option>`;
+                batchCat.innerHTML += '<option value="' + key + '">' + val + '</option>';
+                prodCat.innerHTML += '<option value="' + key + '">' + val + '</option>';
+                filterCat.innerHTML += '<option value="' + key + '">' + val + '</option>';
                 
-                catListContainer.innerHTML += `
-                    <div class="cat-row">
-                        <span><b>${val}</b> <small style="color:var(--text-muted);">(${key})</small></span>
-                        <button class="action-btn delete" onclick="deleteCategory('${key}')" title="Excluir Categoria">🗑️</button>
-                    </div>
-                `;
+                catListContainer.innerHTML += 
+                    '<div class="cat-row">' +
+                        '<span><b>' + val + '</b> <small style="color:var(--text-muted);">(' + key + ')</small></span>' +
+                        '<button class="action-btn delete" onclick="deleteCategory('' + key + '')" title="Excluir Categoria">🗑️</button>' +
+                    '</div>';
             }
             filterCat.value = currentFilterVal;
         }
@@ -780,7 +538,7 @@
                 alert("Você precisa manter pelo menos uma categoria.");
                 return;
             }
-            if(confirm(`Deseja realmente excluir a categoria "${categories[key]}"?`)) {
+            if(confirm('Deseja realmente excluir a categoria "' + categories[key] + '"?')) {
                 delete categories[key];
                 localStorage.setItem('artehouse_cats', JSON.stringify(categories));
                 renderCategoriesUI();
@@ -811,7 +569,7 @@
                     if(processed === files.length) {
                         localStorage.setItem('artehouse_uploaded', JSON.stringify(uploadedImages));
                         renderImagePool();
-                        alert(`${files.length} foto(s) enviada(s) com sucesso para a pool!`);
+                        alert(files.length + ' foto(s) enviada(s) com sucesso para a pool!');
                     }
                 };
                 reader.readAsDataURL(file);
@@ -829,23 +587,23 @@
             });
 
             for(const [date, imgs] of Object.entries(grouped)) {
-                let sectionHTML = `
-                    <div>
-                        <div class="date-group-title">📅 Data: ${date} (${imgs.length} fotos)</div>
-                        <div class="pool-grid">
-                `;
+                let sectionHTML = '<div>' +
+                    '<div class="date-group-title">📅 Data: ' + date + ' (' + imgs.length + ' fotos)</div>' +
+                    '<div class="pool-grid">';
+                
                 imgs.forEach(img => {
                     const isChecked = selectedPaths.has(img.path) ? 'checked' : '';
                     const isSelectedClass = selectedPaths.has(img.path) ? 'selected' : '';
-                    sectionHTML += `
-                        <div class="pool-item ${isSelectedClass}">
-                            <input type="checkbox" class="pool-checkbox" ${isChecked} onchange="toggleSelect('${img.path.replace(/'/g, "\'")}')">
-                            <img src="${img.path}" alt="${img.filename}" loading="lazy" title="${img.filename}" onclick="selectForForm('${img.path.replace(/'/g, "\'")}', '${img.filename.replace(/'/g, "\'")}')">
-                            <div class="pool-item-name" title="${img.filename}">${img.filename}</div>
-                        </div>
-                    `;
+                    const safePath = img.path.replace(/'/g, "\\'");
+                    const safeName = img.filename.replace(/'/g, "\\'");
+                    
+                    sectionHTML += '<div class="pool-item ' + isSelectedClass + '">' +
+                        '<input type="checkbox" class="pool-checkbox" ' + isChecked + ' onchange="toggleSelect('' + safePath + '')">' +
+                        '<img src="' + img.path + '" alt="' + img.filename + '" loading="lazy" title="' + img.filename + '" onclick="selectForForm('' + safePath + '', '' + safeName + '')">' +
+                        '<div class="pool-item-name" title="' + img.filename + '">' + img.filename + '</div>' +
+                    '</div>';
                 });
-                sectionHTML += `</div></div>`;
+                sectionHTML += '</div></div>';
                 poolContainer.innerHTML += sectionHTML;
             }
             document.getElementById('selected-count').innerText = selectedPaths.size;
@@ -895,7 +653,7 @@
 
             let addedCount = 0;
             selectedPaths.forEach(path => {
-                const currentId = match ? `${prefix}${String(num++).padStart(2, '0')}` : `${baseId}-${addedCount+1}`;
+                const currentId = match ? (prefix + String(num++).padStart(2, '0')) : (baseId + '-' + (addedCount+1));
                 catalogData.push({
                     id: currentId,
                     name: baseName,
@@ -908,7 +666,7 @@
             selectedPaths.clear();
             renderProductsList();
             renderImagePool();
-            alert(`${addedCount} produtos adicionados em lote com sucesso!`);
+            alert(addedCount + ' produtos adicionados em lote com sucesso!');
         }
 
         function saveProduct(e) {
@@ -973,21 +731,20 @@
             displayedItems.forEach((prod, displayIndex) => {
                 const catName = categories[prod.category] || '<span style="color: var(--danger)">Categoria Removida</span>';
                 const gIdx = prod.globalIndex;
-                list.innerHTML += `
-                    <div class="item-row">
-                        <img src="${prod.path}" class="item-thumb" onerror="this.src='https://via.placeholder.com/50?text=3D'">
-                        <div class="item-info">
-                            <div class="item-title">[${prod.id || 'SEM-ID'}] ${prod.name}</div>
-                            <div class="item-cat">${catName}</div>
-                        </div>
-                        <div class="item-actions">
-                            <button class="action-btn" onclick="moveProduct(${gIdx}, -1)" title="Subir">⬆️</button>
-                            <button class="action-btn" onclick="moveProduct(${gIdx}, 1)" title="Descer">⬇️</button>
-                            <button class="action-btn" onclick="editProduct(${gIdx})" title="Editar">✏️</button>
-                            <button class="action-btn delete" onclick="deleteProduct(${gIdx})" title="Excluir">🗑️</button>
-                        </div>
-                    </div>
-                `;
+                list.innerHTML += 
+                    '<div class="item-row">' +
+                        '<img src="' + prod.path + '" class="item-thumb" onerror="this.src='https://via.placeholder.com/50?text=3D'">' +
+                        '<div class="item-info">' +
+                            '<div class="item-title">[' + (prod.id || 'SEM-ID') + '] ' + prod.name + '</div>' +
+                            '<div class="item-cat">' + catName + '</div>' +
+                        '</div>' +
+                        '<div class="item-actions">' +
+                            '<button class="action-btn" onclick="moveProduct(' + gIdx + ', -1)" title="Subir">⬆️</button>' +
+                            '<button class="action-btn" onclick="moveProduct(' + gIdx + ', 1)" title="Descer">⬇️</button>' +
+                            '<button class="action-btn" onclick="editProduct(' + gIdx + ')" title="Editar">✏️</button>' +
+                            '<button class="action-btn delete" onclick="deleteProduct(' + gIdx + ')" title="Excluir">🗑️</button>' +
+                        '</div>' +
+                    '</div>';
             });
             localStorage.setItem('artehouse_catalog', JSON.stringify(catalogData));
         }
@@ -1017,7 +774,7 @@
                 localStorage.setItem('artehouse_cats', JSON.stringify(categories));
                 renderCategoriesUI();
                 renderProductsList();
-                alert(`Categoria "${title}" criada com sucesso!`);
+                alert('Categoria "' + title + '" criada com sucesso!');
                 document.getElementById('cat-id').value = '';
                 document.getElementById('cat-title').value = '';
             }
